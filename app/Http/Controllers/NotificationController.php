@@ -410,7 +410,7 @@ class NotificationController extends Controller
 
             $dpt = db::table('employee_syncs')->where('employee_id', '=', Auth::user()->username)->whereNotIn('position', ['chief', 'manager', 'Specialist'])->select('department')->first();
 
-            if (count($dpt) > 0) {
+            if ($dpt != null) {
                 $dep = $dpt->department;
 
                 if ($dep == 'Procurement Department' || $dep == 'Purchasing Control Department') {
@@ -434,7 +434,7 @@ class NotificationController extends Controller
             $notif = 0;
             $dpt = db::table('employee_syncs')->where('employee_id', '=', Auth::user()->username)->whereNotIn('position', ['chief', 'manager', 'Specialist'])->select('department')->first();
 
-            if (count($dpt) > 0) {
+            if ($dpt != null) {
                 $dep = $dpt->department;
                 if ($dep == 'Procurement Department' || $dep == 'Purchasing Control Department') {
                     $dep = '"Procurement Department","Purchasing Control Department"';
@@ -832,7 +832,7 @@ class NotificationController extends Controller
                 ->table('translations')
                 ->where('category', '=', 'translation')
                 ->where('status', '=', 'Waiting')
-                ->whereNull('deleted_at');
+                ->whereNull('deleted_at')->get();
 
             $notif = 0;
             $translate = 0;
