@@ -1500,7 +1500,7 @@ public function fetchMinMoeMonitoring(Request $request)
           $yesterday = date('Y-m-d', strtotime('-1 days', strtotime($now)));
 
           $group = '';
-           if(count($request->get('group')) > 0){
+           if($request->get('group') != null){
              for ($i=0; $i < count($request->get('group')); $i++) {
                $group = $group."'".$request->get('group')[$i]."'";
                if($i != (count($request->get('group'))-1)){
