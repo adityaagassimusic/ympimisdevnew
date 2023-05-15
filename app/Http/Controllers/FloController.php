@@ -477,7 +477,7 @@ class FloController extends Controller
 
         $flo = Flo::where('invoice_number', '=', $invoice_number)->first();
 
-        if (count($flo) <= 0) {
+        if ($flo == null) {
             $flo = KnockDown::where('invoice_number', '=', $invoice_number)->first();
         }
 
