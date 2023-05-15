@@ -259,7 +259,7 @@ class GeneralAffairController extends Controller
 
             $ids = array();
 
-            if (count($request->get('rejected')) > 0) {
+            if ($request->get('rejected') != null) {
                 foreach ($request->get('rejected') as $reject) {
                     array_push($ids, $reject);
                 }
@@ -272,7 +272,7 @@ class GeneralAffairController extends Controller
                     ]);
             }
 
-            if (count($request->get('approved')) > 0) {
+            if ($request->get('approved') != null) {
                 foreach ($request->get('approved') as $approve) {
                     array_push($ids, $approve);
                 }
@@ -355,7 +355,7 @@ class GeneralAffairController extends Controller
 
                 $rejected_lists = [];
 
-                if (count($request->get('rejected')) > 0) {
+                if ($request->get('rejected') != null) {
                     $rejected_lists = Bento::whereIn('id', $request->get('rejected'))->get();
                 }
                 $rejected_emails = [];
@@ -764,7 +764,7 @@ class GeneralAffairController extends Controller
                     'approver_name' => Auth::user()->name,
                 ]);
 
-            if (count($bento) <= 0) {
+            if (!$bento) {
                 $response = array(
                     'status' => false,
                     'message' => 'Tidak ada pesanan yang harus dikonfirmasi.',
@@ -1105,7 +1105,7 @@ class GeneralAffairController extends Controller
                 // if (count($order) > 0) {
                 for ($j = 0; $j < 11; $j++) {
                     if (array_key_exists($j, $order) == true) {
-                        if (count($order[$j]->request) == 1) {
+                        if ($order[$j]->request != null) {
                             $requester = $order[$j]->request;
                         } else {
                             $requester = explode(' ', $order[$j]->request)[0] . ' ' . explode(' ', $order[$j]->request)[1];
@@ -1779,11 +1779,11 @@ class GeneralAffairController extends Controller
         $driver_logs = DriverLog::orderBy('driver_logs.driver_id');
         $drivers = Driver::orderBy('drivers.driver_id');
 
-        if (count($request->get('driver_id')) > 0) {
+        if ($request->get('driver_id') != null) {
             $driver_logs = $driver_logs->whereIn('driver_logs.driver_id', $request->get('driver_id'));
             $drivers = $drivers->whereIn('drivers.driver_id', $request->get('driver_id'));
         }
-        if (count($request->get('status')) > 0) {
+        if ($request->get('status') != null) {
             $driver_logs = $driver_logs->whereIn('driver_logs.status', $request->get('status'));
             $drivers = $drivers->whereIn('drivers.remark', $request->get('status'));
         }
@@ -2231,7 +2231,7 @@ class GeneralAffairController extends Controller
                 $delete_driver_detail = DriverDetail::where('driver_id', '=', $request->get('id'))
                     ->first();
 
-                if (count($delete_driver_detail) > 0) {
+                if ($delete_driver_detail != null) {
                     $delete_driver_detail->forceDelete();
                 }
 
@@ -2276,7 +2276,7 @@ class GeneralAffairController extends Controller
                 $delete_driver_detail = DriverDetail::where('driver_id', '=', $request->get('id'))
                     ->first();
 
-                if (count($delete_driver_detail) > 0) {
+                if ($delete_driver_detail != null) {
                     $delete_driver_detail->forceDelete();
                 }
 
@@ -2318,7 +2318,7 @@ class GeneralAffairController extends Controller
                 $delete_driver_detail = DriverDetail::where('driver_id', '=', $request->get('id'))
                     ->first();
 
-                if (count($delete_driver_detail) > 0) {
+                if ($delete_driver_detail != null) {
                     $delete_driver_detail->forceDelete();
                 }
 
@@ -2809,7 +2809,7 @@ class GeneralAffairController extends Controller
                 $delete_driver_detail = DriverDetail::where('driver_id', '=', $request->get('id'))
                     ->first();
 
-                if (count($delete_driver_detail) > 0) {
+                if ($delete_driver_detail != null) {
                     $delete_driver_detail->forceDelete();
                 }
 
@@ -3141,7 +3141,7 @@ class GeneralAffairController extends Controller
         $filename = "";
         $file_destination = 'data_file/live_cooking';
 
-        if (count($request->file('newAttachment')) > 0) {
+        if ($request->file('newAttachment') != null) {
             try {
                 $file = $request->file('newAttachment');
                 $filename = 'live_cooking_' . date('YmdHisa') . '.' . $request->input('extension');
@@ -3599,7 +3599,7 @@ class GeneralAffairController extends Controller
                     $quota = CanteenLiveCookingAdmin::where('department', $department)->where('section', 'like','%'.$section.'%')->where('remark', 1)->first();
                 }
 
-                if (count($quota) > 0) {
+                if ($quota != null) {
                     if ($quota->live_cooking_role == 'ofc') {
                         if ($department == 'General Process Control Department') {
                             $cek = CanteenLiveCooking::join('employee_syncs', 'employee_syncs.employee_id', 'canteen_live_cookings.order_for')->where('employee_syncs.department', $department)->join('employees', 'employees.employee_id', 'employee_syncs.employee_id')->where('due_date', $due_date)->where('canteen_live_cookings.remark', null)->where('employees.remark', 'OFC')->get();
@@ -3890,7 +3890,7 @@ class GeneralAffairController extends Controller
                 $quota = CanteenLiveCookingMenu::where('due_date', $request->get('due_date'))->first();
                 $live_cooking = CanteenLiveCooking::where('id', $request->get('id'))->first();
                 $check = CanteenLiveCooking::where('due_date', $request->get('due_date'))->where('order_for', $request->get('order_for'))->first();
-                if (count($check) > 0) {
+                if ($check != null) {
                     $status = false;
                     $message = 'Karyawan sudah ada di list.';
                 } else {
@@ -3907,7 +3907,7 @@ class GeneralAffairController extends Controller
                             // $live_cooking->order_by = $request->get('order_by');
                         }
                         $attendance = GeneralAttendance::where('purpose_code', 'Live Cooking')->where('due_date', $live_cooking->due_date)->where('employee_id', $live_cooking->order_for)->first();
-                        if (count($attendance) > 0) {
+                        if ($attendance != null) {
                             $attendance->employee_id = $request->get('order_for');
                             $attendance->save();
                         }
@@ -3936,7 +3936,7 @@ class GeneralAffairController extends Controller
                                 $quota->save();
                             }
                             $attendance = GeneralAttendance::where('purpose_code', 'Live Cooking')->where('due_date', $live_cooking->due_date)->where('employee_id', $live_cooking->order_for)->first();
-                            if (count($attendance) > 0) {
+                            if ($attendance != null) {
                                 $attendance->due_date = $request->get('due_date');
                                 $attendance->employee_id = $request->get('order_for');
                                 $attendance->save();
@@ -3964,7 +3964,7 @@ class GeneralAffairController extends Controller
                 $quota->save();
 
                 $attendance = GeneralAttendance::where('purpose_code', 'Live Cooking')->where('due_date', $live_cooking->due_date)->where('employee_id', $live_cooking->order_for)->first();
-                if (count($attendance) > 0) {
+                if ($attendance != null) {
                     $attendance->forceDelete();
                 }
                 $live_cooking->forceDelete();
@@ -5268,7 +5268,7 @@ class GeneralAffairController extends Controller
                 ->whereNotNull('uniform_attendances.size')
                 ->first();
 
-            if (count($emp) > 0) {
+            if ($emp != null) {
                 if ($emp->attend_date != null) {
                     $response = array(
                         'status' => false,
@@ -5556,7 +5556,7 @@ class GeneralAffairController extends Controller
             $employee = db::table('employees')->where('tag', 'like', '%' . $nik . '%')->first();
         }
 
-        if (count($employee) > 0) {
+        if ($employee != null) {
             $response = array(
                 'status' => true,
                 'message' => 'Logged In',
@@ -5584,7 +5584,7 @@ class GeneralAffairController extends Controller
                 ->whereNotNull('uniform_attendances.size')
                 ->first();
 
-            if (count($emp) > 0) {
+            if ($emp != null) {
                 if ($emp->attend_date != null) {
                     $response = array(
                         'status' => false,
@@ -5880,7 +5880,7 @@ class GeneralAffairController extends Controller
                 $employees = Employee::where('employees.employee_id', $request->get('tag'))->join('employee_syncs', 'employee_syncs.employee_id', 'employees.employee_id')->leftjoin('departments', 'departments.department_name', 'employee_syncs.department')->first();
             }
 
-            if (count($employees) > 0) {
+            if ($employees != null) {
                 $mcu_periode = DB::CONNECTION('ympimis_2')
                     ->table('mcus')
                     ->select('periode')
@@ -6531,7 +6531,7 @@ class GeneralAffairController extends Controller
                 where('shift_date', $now)
                 ->get();
 
-            if (count($auth) > 0) {
+            if ($auth != null) {
                 $response = array(
                     'status' => true,
                     'data_thorax' => $data_thorax,
