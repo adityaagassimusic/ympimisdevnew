@@ -924,7 +924,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <a href="http://10.109.52.4/kitto/public">
+                                <a href="http://10.109.33.33/kitto/public">
                                     <i class="fa fa-caret-right"></i> KITTO (きっと)
                                 </a>
                                 <br>
