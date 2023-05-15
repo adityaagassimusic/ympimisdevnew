@@ -204,7 +204,7 @@ class RecorderProcessController extends Controller
 
     $employee = db::table('employees')->where('tag', 'like', '%'.$tag.'%')->first();
 
-    if(count($employee) > 0 ){
+    if($employee != null ){
       $response = array(
         'status' => true,
         'message' => 'Logged In',

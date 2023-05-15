@@ -4173,13 +4173,13 @@ class AssemblyProcessController extends Controller
             );
             return Response::json($response);
         } else {
-            if (count($employee) > 0) {
+            if ($employee != null) {
                 $location = $employee->location;
                 $loc = explode("-", $location);
                 $number = $loc[2];
                 $locfix = $loc[0] . "-" . $loc[1];
                 $assemblies = Assembly::where('location', '=', $locfix)->where('location_number', '=', $number)->where('remark', '=', 'OTHER')->first();
-                if (count($assemblies) > 0) {
+                if ($assemblies != null) {
                     $assemblies->online_time = date('Y-m-d H:i:s');
                     $assemblies->operator_id = $employee->employee_id;
                     $assemblies->save();
