@@ -1971,7 +1971,7 @@ public function UpdateKaryawanContracUpload(Request $request){
     $filename = "";
     $file_destination = 'data_file/update_karyawan';
 
-    if (count($request->file('newAttachment')) > 0) {
+    if ($request->file('newAttachment') != null) {
         try{
             $file = $request->file('newAttachment');
             $filename = 'UploadPriodeKaryawan'.date('YmdHisa').'.'.$request->input('extension');
@@ -5394,12 +5394,12 @@ public function inputLeaveRequest(Request $request)
             }else{
                 $chief = Approver::where('department',$leave_request->department)->where('remark','Chief')->first();
                 $foreman = Approver::where('department',$leave_request->department)->where('remark','Foreman')->first();
-                if (count($chief) > 0) {
+                if ($chief != null) {
                     if ($chief->approver_email) {
                         array_push($mail_to_user, $chief->approver_email);
                     }
                 }
-                if (count($foreman) > 0) {
+                if ($foreman != null) {
                     if ($foreman->approver_email) {
                         array_push($mail_to_user, $foreman->approver_email);
                     }
@@ -6282,12 +6282,12 @@ public function updateLeaveRequest(Request $request)
             }else{
                 $chief = Approver::where('department',$leave_request->department)->where('remark','Chief')->first();
                 $foreman = Approver::where('department',$leave_request->department)->where('remark','Foreman')->first();
-                if (count($chief) > 0) {
+                if ($chief != null) {
                     if ($chief->approver_email) {
                         array_push($mail_to_user, $chief->approver_email);
                     }
                 }
-                if (count($foreman) > 0) {
+                if ($foreman != null) {
                     if ($foreman->approver_email) {
                         array_push($mail_to_user, $foreman->approver_email);
                     }
@@ -6454,7 +6454,7 @@ public function approvalLeaveRequest($request_id,$remark)
     }
     $status_approval = '';
     $driver_lists = DriverList::orderBy('name', 'asc')->get();
-    if (count($approval) != null) {
+    if ($approval != null) {
         $leave_request = HrLeaveRequest::where('request_id', '=', $request_id)->first();
         $detail_emp = HrLeaveRequestDetail::where('request_id',$request_id)->leftjoin('departments','department_name','department')->get();
         $approval_progress = HrLeaveRequestApproval::where('request_id',$request_id)->get();
@@ -6903,12 +6903,12 @@ public function approvalLeaveRequest($request_id,$remark)
                     }else{
                         $chief = Approver::where('department',$leave_request->department)->where('remark','Chief')->first();
                         $foreman = Approver::where('department',$leave_request->department)->where('remark','Foreman')->first();
-                        if (count($chief) > 0) {
+                        if ($chief != null) {
                             if ($chief->approver_email) {
                                 array_push($mail_to, $chief->approver_email);
                             }
                         }
-                        if (count($foreman) > 0) {
+                        if ($foreman != null) {
                             if ($foreman->approver_email) {
                                 array_push($mail_to, $foreman->approver_email);
                             }
@@ -6983,12 +6983,12 @@ public function approvalLeaveRequest($request_id,$remark)
                 }else{
                     $chief = Approver::where('department',$leave_request->department)->where('remark','Chief')->first();
                     $foreman = Approver::where('department',$leave_request->department)->where('remark','Foreman')->first();
-                    if (count($chief) > 0) {
+                    if ($chief != null) {
                         if ($chief->approver_email) {
                             array_push($mail_to, $chief->approver_email);
                         }
                     }
-                    if (count($foreman) > 0) {
+                    if ($foreman != null) {
                         if ($foreman->approver_email) {
                             array_push($mail_to, $foreman->approver_email);
                         }
@@ -7244,12 +7244,12 @@ public function reasonRejectLeaveRequest(Request $request)
         }else{
             $chief = Approver::where('department',$leave_request->department)->where('remark','Chief')->first();
             $foreman = Approver::where('department',$leave_request->department)->where('remark','Foreman')->first();
-            if (count($chief) > 0) {
+            if ($chief != null) {
                 if ($chief->approver_email) {
                     array_push($mail_to, $chief->approver_email);
                 }
             }
-            if (count($foreman) > 0) {
+            if ($foreman != null) {
                 if ($foreman->approver_email) {
                     array_push($mail_to, $foreman->approver_email);
                 }
@@ -7369,7 +7369,7 @@ public function scanLeaveRequestSecurity(Request $request)
             ->first();
         }
 
-        if (count($emp) > 0) {
+        if ($emp != null) {
             $req = HrLeaveRequestDetail::where('request_id',$request->get('request_id'))->where('employee_id',$emp->employee_id)->first();
             if ($request->get('position') == 'Keluar') {
                 $req->confirmed_at = date('Y-m-d H:i:s');
@@ -7587,12 +7587,12 @@ public function confirmLeaveRequestDriver(Request $request)
         }else{
             $chief = Approver::where('department',$hrRequest->department)->where('remark','Chief')->first();
             $foreman = Approver::where('department',$hrRequest->department)->where('remark','Foreman')->first();
-            if (count($chief) > 0) {
+            if ($chief != null) {
                 if ($chief->approver_email) {
                     array_push($mail_to, $chief->approver_email);
                 }
             }
-            if (count($foreman) > 0) {
+            if ($foreman != null) {
                 if ($foreman->approver_email) {
                     array_push($mail_to, $foreman->approver_email);
                 }
@@ -7696,7 +7696,7 @@ public function Confirmation($request_id, $approver_id){
     $a = RecruitmentApproval::where('request_id', '=', $request_id)->wherenull('status')->take(1)->first();
     $b = RecruitmentApproval::where('request_id', '=', $request_id)->where('approver_id', '=', $id)->whereNotNull('status')->first();
 
-    if (count($a) > 0) {
+    if ($a != null) {
         if ($a->approver_id == $id) {
             $p = 'Request Berhasil Disetujui';
             if ($a->remark == 'DGM') {
@@ -7993,7 +7993,7 @@ public function ConfirmationRequestMagang($request_id, $approver_id){
     $a = RequestMagangApproval::where('request_id', '=', $request_id)->wherenull('status')->take(1)->first();
     $b = RequestMagangApproval::where('request_id', '=', $request_id)->where('approver_id', '=', $id)->whereNotNull('status')->first();
 
-    if (count($a) > 0) {
+    if ($a != null) {
         if ($a->approver_id == $id) {
             $approved = RequestMagangApproval::where('request_id', '=', $request_id)->wherenull('status')->where('id',$approver_id)->update([
                 'status' => 'Approved',
