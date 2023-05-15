@@ -1142,7 +1142,7 @@ class AssemblyProcessController extends Controller
 
             if ($request->get('statuses') == 'start') {
                 $log_empty = LogProcess::where('origin_group_code', '042')->orderby('created_at', 'desc')->where('process_code', 1)->limit(1)->where('model', '')->first();
-                if (count($log_empty) > 0) {
+                if ($log_empty != null) {
                     $log_empty->model = $request->get('model');
                     $log_empty->save();
                     if ($request->get('category') == 'FG') {
@@ -2720,7 +2720,7 @@ class AssemblyProcessController extends Controller
 
         $update_target = DB::connection('ympimis_2')->table('assembly_targets')
             ->where('material_number', $gmc)->where('due_date', date('Y-m-d'))->first();
-        if (count($update_target) > 0) {
+        if ($update_target != null) {
             $update_target2 = DB::connection('ympimis_2')->table('assembly_targets')
                 ->where('material_number', $gmc)->where('due_date', date('Y-m-d'))->update([
                 'actual_quantity' => $update_target->actual_quantity + 1,
@@ -2895,7 +2895,7 @@ class AssemblyProcessController extends Controller
             ->where('due_date', date('Y-m-d'))
             ->first();
 
-        if (count($update_target) > 0) {
+        if ($update_target != null) {
             $update_target2 = DB::connection('ympimis_2')
                 ->table('assembly_targets')
                 ->where('material_number', $gmc)
@@ -4226,8 +4226,8 @@ class AssemblyProcessController extends Controller
         } else {
             if ($request->get('location') == 'qa-fungsi') {
                 $detailsfungsi = AssemblyDetail::where('tag', '=', $this->dec2hex($request->get('tag')))->where('origin_group_code', '=', '041')->where('assembly_details.deleted_at', '=', null)->where('location', 'renraku-fungsi')->first();
-                if (count($detailsfungsi) > 0) {
-                    if (count($employee->location) > 0) {
+                if ($detailsfungsi != null) {
+                    if ($employee != null && $employee->location != null && count($employee->location) > 0) {
                         $location = $employee->location;
                         $loc = explode("-", $location);
                         $number = $loc[2];
@@ -4256,8 +4256,8 @@ class AssemblyProcessController extends Controller
                 }
             } elseif ($request->get('location') == 'fukiage1-visual') {
                 $detailsvisual1 = AssemblyDetail::where('tag', '=', $this->dec2hex($request->get('tag')))->where('origin_group_code', '=', '041')->where('assembly_details.deleted_at', '=', null)->where('location', 'qa-fungsi')->first();
-                if (count($detailsvisual1) > 0) {
-                    if (count($employee->location) > 0) {
+                if ($detailsvisual1 != null) {
+                    if ($employee != null && $employee->location != null && count($employee->location) > 0) {
                         $location = $employee->location;
                         $loc = explode("-", $location);
                         $number = $loc[2];
@@ -4286,8 +4286,8 @@ class AssemblyProcessController extends Controller
                 }
             } elseif ($request->get('location') == 'qa-visual1') {
                 $detailsvisual1 = AssemblyDetail::where('tag', '=', $this->dec2hex($request->get('tag')))->where('origin_group_code', '=', '041')->where('assembly_details.deleted_at', '=', null)->where('location', 'fukiage1-visual')->first();
-                if (count($detailsvisual1) > 0) {
-                    if (count($employee->location) > 0) {
+                if ($detailsvisual1 != null) {
+                    if ($employee != null && $employee->location != null && count($employee->location) > 0) {
                         $location = $employee->location;
                         $loc = explode("-", $location);
                         $number = $loc[2];
@@ -4316,8 +4316,8 @@ class AssemblyProcessController extends Controller
                 }
             } elseif ($request->get('location') == 'qa-visual2') {
                 $detailsvisual1 = AssemblyDetail::where('tag', '=', $this->dec2hex($request->get('tag')))->where('origin_group_code', '=', '041')->where('assembly_details.deleted_at', '=', null)->where('location', 'qa-visual1')->first();
-                if (count($detailsvisual1) > 0) {
-                    if (count($employee->location) > 0) {
+                if ($detailsvisual1 != null) {
+                    if ($employee != null && $employee->location != null && count($employee->location) > 0) {
                         $location = $employee->location;
                         $loc = explode("-", $location);
                         $number = $loc[2];
@@ -4345,7 +4345,7 @@ class AssemblyProcessController extends Controller
                     return Response::json($response);
                 }
             } else {
-                if (count($employee->location) > 0) {
+                if ($employee != null && $employee->location != null && count($employee->location) > 0) {
                     $location = $employee->location;
                     $loc = explode("-", $location);
                     $number = $loc[2];
@@ -4953,7 +4953,7 @@ class AssemblyProcessController extends Controller
             $next = $flow->flow + 1;
             $flownew = AssemblyFlow::where('flow', $next)->where('origin_group_code', '041')->first();
 
-            if (count($flownew) > 0) {
+            if ($flownew != null) {
                 $inventories->location_next = $flownew->process;
             }
 
@@ -8420,16 +8420,16 @@ class AssemblyProcessController extends Controller
             $details = AssemblyDetail::where('tag', $this->dec2hex($request->get('tag')))->first();
             $details2 = AssemblyDetail::where('tag', $this->dec2hex($request->get('tag')))->get();
 
-            if (count($details) > 0) {
+            if ($details != null) {
                 $serials = AssemblySerial::where('serial_number', $details->serial_number)->where('origin_group_code', $details->origin_group_code)->first();
-                if (count($serials) > 0) {
+                if ($serials != null) {
                     $serials->forceDelete();
                 }
 
                 $stamp_inventory = StampInventory::where('stamp_inventories.serial_number', '=', $details->serial_number)
                     ->where('stamp_inventories.model', '=', $details->model)
-                    ->where('origin_group_code', $details->origin_group_code);
-                if (count($stamp_inventory) > 0) {
+                    ->where('origin_group_code', $details->origin_group_code)->first();
+                if ($stamp_inventory != null) {
                     $stamp_inventory->forceDelete();
                 }
             }
@@ -8444,12 +8444,12 @@ class AssemblyProcessController extends Controller
 
             AssemblyDetail::where('tag', $this->dec2hex($request->get('tag')))->forceDelete();
 
-            if (count($inventory) > 0) {
+            if ($inventory != null) {
                 $inventory->forceDelete();
             }
             $tag->save();
 
-            if (count($details) > 0) {
+            if ($details != null) {
                 $log = new AssemblyLog([
                     'tag' => $details->tag,
                     'serial_number' => $details->serial_number,
@@ -8522,16 +8522,16 @@ class AssemblyProcessController extends Controller
             $details = AssemblyDetail::where('tag', $this->dec2hex($request->get('tag')))->first();
             $details2 = AssemblyDetail::where('tag', $this->dec2hex($request->get('tag')))->get();
 
-            if (count($details) > 0) {
+            if ($details != null) {
                 $serials = AssemblySerial::where('serial_number', $details->serial_number)->where('origin_group_code', $details->origin_group_code)->first();
-                if (count($serials) > 0) {
+                if ($serials != null) {
                     $serials->forceDelete();
                 }
 
                 $stamp_inventory = StampInventory::where('stamp_inventories.serial_number', '=', $details->serial_number)
                     ->where('stamp_inventories.model', '=', $details->model)
-                    ->where('origin_group_code', $details->origin_group_code);
-                if (count($stamp_inventory) > 0) {
+                    ->where('origin_group_code', $details->origin_group_code)->first();
+                if ($stamp_inventory != null) {
                     $stamp_inventory->forceDelete();
                 }
             }
@@ -8545,12 +8545,12 @@ class AssemblyProcessController extends Controller
             $now = date('Y-m-d H:i:s');
             AssemblyDetail::where('tag', $this->dec2hex($request->get('tag')))->forceDelete();
 
-            if (count($inventory) > 0) {
+            if ($inventory != null) {
                 $inventory->forceDelete();
             }
             $tag->save();
 
-            if (count($details) > 0) {
+            if ($details != null) {
                 $log = new AssemblyLog([
                     'tag' => $details->tag,
                     'serial_number' => $details->serial_number,
@@ -9878,7 +9878,7 @@ class AssemblyProcessController extends Controller
                 $employee = db::table('assembly_operators')->join('employee_syncs', 'assembly_operators.employee_id', '=', 'employee_syncs.employee_id')->where('tag', '=', strtoupper($this->dec2hex($request->get('employee_id'))))->first();
             }
 
-            if (count($employee) == 0) {
+            if ($employee == null) {
                 $response = array(
                     'status' => false,
                     'message' => 'Employee Tidak Ditemukan',
@@ -9975,7 +9975,7 @@ class AssemblyProcessController extends Controller
 
             $tags = db::table('assembly_tags')->where('assembly_tags.tag', '=', strtoupper($this->dec2hex($tag)))->where('origin_group_code', '043')->first();
 
-            if (count($tags) > 0 && $tags->serial_number != null) {
+            if ($tags != null && $tags->serial_number != null) {
                 $details = AssemblyDetail::where('assembly_details.tag', strtoupper($this->dec2hex($tag)))->where('assembly_details.serial_number', $tags->serial_number)->where('assembly_details.origin_group_code', '043')->join('employee_syncs', 'employee_syncs.employee_id', 'assembly_details.operator_id')->join('assembly_operators', 'assembly_operators.employee_id', 'assembly_details.operator_id')->orderby('assembly_details.id', 'desc')->get();
 
                 $inventory = AssemblyInventory::where('tag', strtoupper($this->dec2hex($tag)))->where('serial_number', $tags->serial_number)->where('origin_group_code', '043')->first();
@@ -10710,7 +10710,7 @@ class AssemblyProcessController extends Controller
 
             $tags = db::table('assembly_tags')->where('assembly_tags.tag', '=', strtoupper($this->dec2hex($tag)))->where('origin_group_code', '042')->where('remark', 'not like', '%_U%')->first();
 
-            if (count($tags) > 0 && $tags->serial_number != null) {
+            if ($tags != null && $tags->serial_number != null) {
 
                 $details = AssemblyDetail::where('assembly_details.tag', strtoupper($this->dec2hex($tag)))->where('serial_number', $tags->serial_number)->where('assembly_details.origin_group_code', '042')->join('employee_syncs', 'employee_syncs.employee_id', 'assembly_details.operator_id')->join('assembly_operators', 'assembly_operators.employee_id', 'assembly_details.operator_id')->orderby('assembly_details.id', 'desc')->get();
 
@@ -10802,7 +10802,7 @@ class AssemblyProcessController extends Controller
 
             $tags = db::table('assembly_tags')->where('assembly_tags.tag', '=', strtoupper($this->dec2hex($tag)))->where('origin_group_code', '042')->first();
 
-            if (count($tags) > 0 && $tags->serial_number != null) {
+            if ($tags != null && $tags->serial_number != null) {
                 $details = AssemblyDetail::where('assembly_details.tag', strtoupper($this->dec2hex($tag)))->where('serial_number', $tags->serial_number)->where('assembly_details.origin_group_code', '042')->join('employee_syncs', 'employee_syncs.employee_id', 'assembly_details.operator_id')->join('assembly_operators', 'assembly_operators.employee_id', 'assembly_details.operator_id')->orderby('assembly_details.id', 'desc')->get();
 
                 $inventory = AssemblyInventory::where('tag', strtoupper($this->dec2hex($tag)))->where('serial_number', $tags->serial_number)->where('origin_group_code', '042')->first();
