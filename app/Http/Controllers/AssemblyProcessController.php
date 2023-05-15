@@ -1285,7 +1285,7 @@ class AssemblyProcessController extends Controller
 
         $started_at = date('Y-m-d H:i:s');
 
-        if (count($tag) <= 0) {
+        if ($tag == null) {
             $response = array(
                 'status' => false,
                 'message' => 'Tag tidak ditemukan / Tag masih aktif',
