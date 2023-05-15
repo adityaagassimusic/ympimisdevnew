@@ -280,7 +280,7 @@
 
 	function getData(){
 
-		$.get('{{ url("fetch/maintenance/tpm/pressure") }}', function(result, status, xhr) {
+		$.get('http://10.109.33.33/mirai/public/fetch/maintenance/tpm/pressure', function(result, status, xhr) {
 			if(result.status){
 				$("#panel_machine").empty();
 				var body_panel = "";
