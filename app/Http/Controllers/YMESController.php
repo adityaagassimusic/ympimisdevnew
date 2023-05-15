@@ -29,6 +29,7 @@ class YMESController extends Controller
             'production_result_return',
             'production_result_scrap',
             'production_result_error',
+            'production_result_temporary',
         ];
         $this->interface_frequencies = [
             'Every Thirty Minutes',
@@ -59,12 +60,15 @@ class YMESController extends Controller
             ->orderBy('storage_location', 'ASC')
             ->get();
 
-        return view('transactions.temporary', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'materials' => $materials,
-            'locations' => $locations,
-        ))->with('page', 'Production Result Temporary')->with('head', 'Transaction');
+        return view(
+            'transactions.temporary',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'materials' => $materials,
+                'locations' => $locations,
+            )
+        )->with('page', 'Production Result Temporary')->with('head', 'Transaction');
     }
 
     public function indexProductionResult()
@@ -79,11 +83,14 @@ class YMESController extends Controller
             ->select('item_code', 'item_name', 'unit_code', 'mrp_ctrl', 'issue_loc_code')
             ->get();
 
-        return view('transactions.production_result', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'materials' => $materials,
-        ))->with('page', 'Production Result')->with('head', 'Transaction');
+        return view(
+            'transactions.production_result',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'materials' => $materials,
+            )
+        )->with('page', 'Production Result')->with('head', 'Transaction');
     }
 
     public function indexGoodsMovement()
@@ -94,7 +101,7 @@ class YMESController extends Controller
         $materials = db::connection('ymes')->table('vm_item0010')
             ->whereNull('plant_spitem_status')
             ->whereNull('special_prc_type')
-        // ->whereIn('eval_class_code', ['9030'])
+            // ->whereIn('eval_class_code', ['9030'])
             ->select('item_code', 'item_name', 'unit_code', 'mrp_ctrl', 'issue_loc_code')
             ->get();
 
@@ -105,12 +112,15 @@ class YMESController extends Controller
             ->orderBy('storage_location', 'ASC')
             ->get();
 
-        return view('transactions.goods_movement', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'materials' => $materials,
-            'locations' => $locations,
-        ))->with('page', 'Goods Movement')->with('head', 'Transaction');
+        return view(
+            'transactions.goods_movement',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'materials' => $materials,
+                'locations' => $locations,
+            )
+        )->with('page', 'Goods Movement')->with('head', 'Transaction');
     }
 
     public function indexInventory()
@@ -118,12 +128,15 @@ class YMESController extends Controller
         $title = "Inventroy Information";
         $title_jp = "";
 
-        return view('transactions.inventory', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'materials' => $this->materials,
-            'slocs' => $this->slocs,
-        ))->with('page', 'Inventory')->with('head', 'Transaction');
+        return view(
+            'transactions.inventory',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'materials' => $this->materials,
+                'slocs' => $this->slocs,
+            )
+        )->with('page', 'Inventory')->with('head', 'Transaction');
     }
 
     public function indexHistory()
@@ -143,14 +156,17 @@ class YMESController extends Controller
             ->orderBy('storage_location', 'ASC')
             ->get();
 
-        return view('transactions.history', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'transactions' => [],
-            'materials' => $materials,
-            'locations' => $locations,
-            'categories' => $this->categories
-        ))->with('page', 'Transaction History')->with('head', 'Transaction');
+        return view(
+            'transactions.history',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'transactions' => [],
+                'materials' => $materials,
+                'locations' => $locations,
+                'categories' => $this->categories
+            )
+        )->with('page', 'Transaction History')->with('head', 'Transaction');
     }
 
     public function indexInterfaceSetting()
@@ -174,16 +190,19 @@ class YMESController extends Controller
             $employees[$employee_sync[$i]->employee_id] = $employee_sync[$i];
         }
 
-        return view('transactions.interface_setting', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'transaction' => $transaction,
-            'error' => $error,
-            'setting_logs' => $setting_logs,
-            'employees' => $employees,
-            'interface_frequencies' => $this->interface_frequencies,
-            'error_interface_frequencies' => $this->error_interface_frequencies,
-        ))->with('page', 'YMES Interface Setting')->with('head', 'YMES Interface Setting');
+        return view(
+            'transactions.interface_setting',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'transaction' => $transaction,
+                'error' => $error,
+                'setting_logs' => $setting_logs,
+                'employees' => $employees,
+                'interface_frequencies' => $this->interface_frequencies,
+                'error_interface_frequencies' => $this->error_interface_frequencies,
+            )
+        )->with('page', 'YMES Interface Setting')->with('head', 'YMES Interface Setting');
     }
 
     public function updateInterfaceSetting(Request $request)
@@ -284,7 +303,7 @@ class YMESController extends Controller
 
             DB::commit();
             return back()->with('success', 'Interface setting successfully updated')->with('page', 'YMES Interface Setting');
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             DB::rollback();
             $msg = strtolower($e->getMessage());
             if (str_contains($msg, 'duplicate')) {
@@ -315,11 +334,11 @@ class YMESController extends Controller
         $temp = db::connection('ympimis_2')
             ->table('production_result_temps');
 
-        if (count($request->get('material_number')) > 0) {
+        if ($request->get('material_number') != null) {
             $temp = $temp->whereIn('material_number', $request->get('material_number'));
         }
 
-        if (count($request->get('issue_location')) > 0) {
+        if ($request->get('issue_location') != null) {
             $temp = $temp->whereIn('issue_location', $request->get('issue_location'));
         }
 
@@ -342,10 +361,13 @@ class YMESController extends Controller
         $title = "Transaction Error";
         $title_jp = "";
 
-        return view('transactions.error', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-        ))->with('page', 'Transaction Error')->with('head', 'Transaction');
+        return view(
+            'transactions.error',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+            )
+        )->with('page', 'Transaction Error')->with('head', 'Transaction');
     }
 
     public function fetchError(Request $request)
@@ -775,7 +797,7 @@ class YMESController extends Controller
     {
         try {
 
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -895,7 +917,7 @@ class YMESController extends Controller
             );
             return Response::json($response);
 
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -932,7 +954,7 @@ class YMESController extends Controller
             );
             return Response::json($response);
 
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -1025,7 +1047,7 @@ class YMESController extends Controller
                 );
                 return Response::json($response);
             }
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -1074,7 +1096,23 @@ class YMESController extends Controller
             //     ]);
 
             self::goods_movement(
-                $category, $function, $action, $result_date, $slip_number, $serial_number, $material_number, $issue_location, $receive_location, $quantity, $remark, $created_by, $created_by_name, $synced, $synced_by, $material_description);
+                $category,
+                $function,
+                $action,
+                $result_date,
+                $slip_number,
+                $serial_number,
+                $material_number,
+                $issue_location,
+                $receive_location,
+                $quantity,
+                $remark,
+                $created_by,
+                $created_by_name,
+                $synced,
+                $synced_by,
+                $material_description
+            );
         }
 
         $response = array(
@@ -1123,7 +1161,23 @@ class YMESController extends Controller
             //     ]);
 
             self::production_result(
-                $category, $function, $action, $result_date, $slip_number, $serial_number, $material_number, $issue_location, $mstation, $quantity, $remark, $created_by, $created_by_name, $synced, $synced_by, $material_description);
+                $category,
+                $function,
+                $action,
+                $result_date,
+                $slip_number,
+                $serial_number,
+                $material_number,
+                $issue_location,
+                $mstation,
+                $quantity,
+                $remark,
+                $created_by,
+                $created_by_name,
+                $synced,
+                $synced_by,
+                $material_description
+            );
         }
 
         $response = array(
@@ -1138,10 +1192,13 @@ class YMESController extends Controller
         $title = "Bom Multilevel";
         $title_jp = "";
 
-        return view('transactions.ymes.bom_multilevel', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-        ))->with('page', 'BOM Multilevel');
+        return view(
+            'transactions.ymes.bom_multilevel',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+            )
+        )->with('page', 'BOM Multilevel');
 
     }
 
@@ -1344,7 +1401,7 @@ class YMESController extends Controller
                         'updtterm' => $updtterm,
                         'updtprgnm' => $updtprgnm,
                     ]);
-            } catch (\Exception$e) {
+            } catch (\Exception $e) {
                 $ymes_error_log = DB::connection('ympimis_2')->table('ymes_error_gm_logs')
                     ->insert([
                         'category' => $category,
@@ -1413,7 +1470,7 @@ class YMESController extends Controller
                 $trigger = DB::connection('ymes')->select("select fn_i_ext1010_d_mes0200()");
                 return $trigger;
             }
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $ymes_error_log = DB::connection('ympimis_2')->table('ymes_error_triggers')
                 ->insert([
                     'category' => $category,
