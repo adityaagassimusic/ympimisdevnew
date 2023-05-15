@@ -24,7 +24,7 @@
         <input type="text" name="codesn" id="codesn" value="{{$sn}}" hidden="">
 
         @foreach($barcode as $nomor => $barcode) 
-        <input type="text" name="codemodel" id="codemodel" value="{{ str_replace(' ', '&nbsp;', $barcode->model) }}" hidden="">
+        <input type="text" name="codemodel" id="codemodel" value="{{$barcode->model}}" hidden="">
         @endforeach 
 
         <tr>
