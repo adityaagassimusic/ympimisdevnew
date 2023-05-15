@@ -1,4 +1,5 @@
-<?php $__env->startSection('stylesheets'); ?>
+@extends('layouts.master')
+@section('stylesheets')
 <link href="<?php echo e(url("css/jquery.gritter.css")); ?>" rel="stylesheet">
 <link href="<?php echo e(url("css/jquery.numpad.css")); ?>" rel="stylesheet">
 <style type="text/css">
@@ -163,8 +164,8 @@
 			padding: 0px;
 		}
 </style>
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('header'); ?>
+@stop
+@section('header')
 <section class="content-header">
 	<h1>
 		<?php echo e($title); ?>
@@ -175,8 +176,8 @@
 		<a class="btn btn-danger pull-right" target="_blank" href="{{ url('index/recorder/cdm_report') }}" style="margin-right: 10px"><i class="fa fa-file-pdf-o"></i> &nbsp;Report</a>
 	</h1>
 </section>
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('content'); ?>
+@stop
+@section('content')
 <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 <section class="content">
 	<div id="loading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(0,191,255); z-index: 30001; opacity: 0.8;">
@@ -223,16 +224,11 @@
 						<thead>
 							<tr>
 								<th style="width: 1%;">#</th>
-								<th style="width: 1%;">Product</th>
+								<th style="width: 3%;">Product</th>
 							</tr>					
 						</thead>
 						<tbody id="tableBodyList">
 						</tbody>
-						<tfoot>
-							<tr>
-								<th></th>
-							</tr>
-						</tfoot>
 					</table>
 				</div>
 			</div>
@@ -1969,9 +1965,10 @@
 	</div>
 </div>
 </section>
+@endsection
 
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('scripts'); ?>
+
+@section('scripts')
 <script src="<?php echo e(url("js/jquery.gritter.min.js")); ?>"></script>
 <script src="<?php echo e(url("js/dataTables.buttons.min.js")); ?>"></script>
 <script src="<?php echo e(url("js/buttons.flash.min.js")); ?>"></script>
@@ -2655,23 +2652,6 @@
 								extend: 'pageLength',
 								className: 'btn btn-default',
 							},
-							{
-								extend: 'copy',
-								className: 'btn btn-success',
-								text: '<i class="fa fa-copy"></i> Copy',
-								exportOptions: {
-									columns: ':not(.notexport)'
-								}
-							},
-							{
-								extend: 'excel',
-								className: 'btn btn-info',
-								text: '<i class="fa fa-file-excel-o"></i> Excel',
-								exportOptions: {
-									columns: ':not(.notexport)'
-								}
-							},
-							
 							]
 						},
 						'paging': true,
@@ -3628,5 +3608,4 @@
 	}
 
 </script>
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+@endsection

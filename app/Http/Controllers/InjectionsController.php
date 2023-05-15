@@ -323,7 +323,7 @@ class InjectionsController extends Controller
     {
         $tag = InjectionTag::where('tag', '=', $request->get('tag'))->where('operator_id', '=', null)->first();
 
-        if (count($tag) > 0) {
+        if ($tag != null) {
             $qty = 0;
             $part = DB::SELECT("SELECT capacity FROM injection_parts where gmc = '" . $tag->material_number . "' and deleted_at is null and remark = 'injection'");
             if (count($part) > 0) {
@@ -349,7 +349,7 @@ class InjectionsController extends Controller
     {
         $part = InjectionMoldingMaster::where('status_mesin', '=', $request->get('mesin'))->first();
 
-        if (count($part) > 0) {
+        if ($part != null) {
             $product = DB::SELECT("SELECT id,part_name,CONCAT(SUBSTRING_INDEX(part_name, ' ', 1),'-',UPPER(part_code),'-',UPPER(color),'-',UPPER(gmc)) as product FROM `injection_parts` where remark = 'injection' and color = '" . $request->get('color') . "' and part_code = '" . $part->product . "' and deleted_at is null ORDER BY part_name desc");
 
             $response = array(
@@ -382,7 +382,7 @@ class InjectionsController extends Controller
             $employee = db::table('employees')->where('tag', 'like', '%' . $nik . '%')->first();
         }
 
-        if (count($employee) > 0) {
+        if ($employee != null) {
             $response = array(
                 'status' => true,
                 'message' => 'Logged In',
@@ -1630,7 +1630,7 @@ class InjectionsController extends Controller
             ]);
 
             $machinework = InjectionMachineWork::where('mesin', $request->get('mesin'))->where('tag_molding', null)->first();
-            if (count($machinework) > 0) {
+            if ($machinework != null) {
                 $machinework->part_name = $request->get('part_name');
                 $machinework->part_type = $request->get('part_type');
                 $machinework->color = $request->get('color');
@@ -1768,7 +1768,7 @@ class InjectionsController extends Controller
         $temp = InjectionProcessTemp::where('mesin', $request->get('mesin'))->first();
         $temp_machine = InjectionMachineWork::where('mesin', $request->get('mesin'))->where('tag_molding', '!=', null)->first();
 
-        if (count($temp_machine) > 0) {
+        if ($temp_machine != null) {
             $response = array(
                 'status' => true,
                 'datas' => $temp,
@@ -2025,7 +2025,7 @@ class InjectionsController extends Controller
             ]);
 
             $machinework = InjectionMachineWork::where('mesin', $request->get('mesin'))->first();
-            if (count($machinework) > 0) {
+            if ($machinework != null) {
                 $machinework->tag_molding = null;
                 $machinework->part_name = null;
                 $machinework->part_type = null;
@@ -4615,7 +4615,7 @@ class InjectionsController extends Controller
 
         for ($i = 0; $i < count($mesin_moldings); $i++) {
             $mesin = InjectionMoldingMaster::where('status', 'PASANG')->where('status_mesin', $mesin_moldings[$i])->first();
-            if (count($mesin) == 0) {
+            if ($mesin != null) {
                 array_push($mesins, $mesin_moldings[$i]);
             } else {
                 array_push($mesins_lepas, $mesin_moldings[$i]);
@@ -6399,7 +6399,7 @@ class InjectionsController extends Controller
                 $dryer = InjectionDryer::where('machine', $request->get('machine'))->first();
             }
 
-            if (count($dryer) > 0) {
+            if ($dryer != null) {
                 $response = array(
                     'status' => true,
                     'dryer' => $dryer,
@@ -6882,7 +6882,7 @@ class InjectionsController extends Controller
             if ($transaction) {
                 $process = InjectionProcessLog::where('tag_product', $request->get('tag'))->where('material_number', $transaction->material_number)->where('cavity', $transaction->cavity)->where('remark', null)->first();
 
-                if (count($process) > 0) {
+                if ($process != null) {
                     $process->remark = 'Close';
                     $process->save();
                 }
@@ -7975,7 +7975,7 @@ class InjectionsController extends Controller
         try {
             $emp = Employee::where('tag', $request->get('employee_id'))->first();
 
-            if (count($emp) > 0) {
+            if ($emp != null) {
                 $response = array(
                     'status' => true,
                     'employee' => $emp,
@@ -8003,7 +8003,7 @@ class InjectionsController extends Controller
         try {
             $emp = Employee::where('tag', $request->get('employee_id'))->first();
 
-            if (count($emp) > 0) {
+            if ($emp != null) {
                 $response = array(
                     'status' => true,
                     'employee' => $emp,
@@ -8732,7 +8732,7 @@ class InjectionsController extends Controller
     public function inputCleaning(Request $request)
     {
         try {
-            if (count($request->file('fileData')) > 0) {
+            if ($request->file('fileData') != null) {
                 $tujuan_upload = 'data_file/injection/cleaning';
                 $file = $request->file('fileData');
                 $filename = md5($request->input('id_point') . $request->input('check_time') . date('YmdHisa')) . '.' . $request->input('extension');
@@ -9411,7 +9411,7 @@ class InjectionsController extends Controller
                 $rc91 = "SELECT quantity FROM injection_inventory_histories WHERE location = 'RC91' AND material_number = gmc AND injection_inventory_histories.deleted_at IS NULL and date = '" . $request->get('date') . "'";
             }
 
-            $ymes = DB::connection('ymes')->select("SELECT
+            $ymes = DB::connection('ymes_rio')->select("SELECT
     *
   FROM
     vd_mes0010
