@@ -81,6 +81,7 @@ class ShipmentScheduleController extends Controller
     {
         $shipment_schedules = ShipmentSchedule::orderByRaw('st_date DESC', 'material_number ASC')
             ->get();
+
         $materials = Material::orderBy('material_number', 'ASC')->get();
         $destinations = Destination::orderBy('destination_shortname', 'ASC')->get();
         $shipment_conditions = ShipmentCondition::orderBy('shipment_condition_code', 'ASC')->get();
@@ -91,7 +92,8 @@ class ShipmentScheduleController extends Controller
             'destinations' => $destinations,
             'shipment_conditions' => $shipment_conditions,
             'hpls' => $this->hpl,
-        ))->with('page', 'Shipment Schedule');
+        )
+        )->with('page', 'Shipment Schedule');
 
     }
 
@@ -454,8 +456,7 @@ class ShipmentScheduleController extends Controller
 
     public function create(Request $request)
     {
-        try
-        {
+        try {
             $id = Auth::id();
             $st_month = date('Y-m-d', strtotime(str_replace('/', '-', '01/' . $request->get('st_month'))));
 
@@ -506,7 +507,8 @@ class ShipmentScheduleController extends Controller
         $shipment_schedule = ShipmentSchedule::find($id);
         return view('shipment_schedules.show', array(
             'shipment_schedule' => $shipment_schedule,
-        ))->with('page', 'Shipment Schedule');
+        )
+        )->with('page', 'Shipment Schedule');
         //
     }
 
@@ -514,7 +516,7 @@ class ShipmentScheduleController extends Controller
     {
         $query = "select st_month, st_date, sales_order, CONCAT(shipment.material_number,' - ',material_description) material, shipment.quantity, users.`name`, material_description, CONCAT(materials.origin_group_code,' - ',origin_group_name) as origin_group, CONCAT(destinations.destination_code,' - ',destinations.destination_name) as destination, CONCAT(shipment_conditions.shipment_condition_code,' - ',shipment_conditions.shipment_condition_name) shipment_condition, bl_date, weekly_calendars.week_name, shipment.created_at, shipment.hpl, shipment.updated_at from
         (select st_month, sales_order, shipment_condition_code, destination_code, material_number, hpl, st_date, bl_date, quantity, created_by, created_at, updated_at from shipment_schedules where id = "
-        . $request->get('id') . ") as shipment
+            . $request->get('id') . ") as shipment
         left join materials on materials.material_number = shipment.material_number
         left join destinations on shipment.destination_code = destinations.destination_code
         left join shipment_conditions on shipment.shipment_condition_code = shipment_conditions.shipment_condition_code
@@ -534,8 +536,7 @@ class ShipmentScheduleController extends Controller
 
     public function edit(Request $request)
     {
-        try
-        {
+        try {
             $st_month = date('Y-m-d', strtotime(str_replace('/', '-', '01/' . $request->get('st_month'))));
             $shipment_schedule = ShipmentSchedule::find($request->get("id"));
 
@@ -578,7 +579,7 @@ class ShipmentScheduleController extends Controller
 
     public function delete(Request $request)
     {
-        $shipment_schedule = ShipmentSchedule::find($id);
+        $shipment_schedule = ShipmentSchedule::find($request->get('id'));
         $shipment_schedule->delete();
 
         $response = array(

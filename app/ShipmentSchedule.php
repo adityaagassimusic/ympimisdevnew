@@ -9,9 +9,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ShipmentSchedule extends Model
 {
 	use SoftDeletes;
-    //
+
+	protected $table = 'shipment_schedules';
+
 	protected $fillable = [
-		'st_month', 'sales_order', 'shipment_condition_code', 'destination_code', 'material_number', 'hpl', 'bl_date', 'st_date', 'quantity' , 'actual_quantity', 'created_by'
+		'st_month',
+		'sales_order',
+		'shipment_condition_code',
+		'destination_code',
+		'material_number',
+		'hpl',
+		'bl_date',
+		'st_date',
+		'quantity',
+		'actual_quantity',
+		'created_by'
 	];
 
 	public function user()
@@ -43,5 +55,5 @@ class ShipmentSchedule extends Model
 	{
 		return $this->belongsTo('App\ShipmentCondition', 'shipment_condition_code', 'shipment_condition_code')->withTrashed();
 	}
-    //
+	//
 }
