@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Response;
+use Exception;
 
 class ExtraOrderController extends Controller
 {
@@ -151,13 +152,16 @@ class ExtraOrderController extends Controller
         $shipment_conditions = ShipmentCondition::orderBy('shipment_condition_code', 'ASC')->get();
         $buyers = ExtraOrderBuyer::orderBy('attention', 'ASC')->get();
 
-        return view('extra_order.extra_order_data', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'destinations' => $destinations,
-            'shipment_conditions' => $shipment_conditions,
-            'buyers' => $buyers,
-        ))->with('page', 'EOC Approval Monitoring')->with('head', 'Extra Order');
+        return view(
+            'extra_order.extra_order_data',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'destinations' => $destinations,
+                'shipment_conditions' => $shipment_conditions,
+                'buyers' => $buyers,
+            )
+        )->with('page', 'EOC Approval Monitoring')->with('head', 'Extra Order');
     }
 
     public function indexApprovalMonitoring()
@@ -170,11 +174,14 @@ class ExtraOrderController extends Controller
            AND approver_id IS NOT NULL
            ORDER BY approver_name");
 
-        return view('extra_order.monitoring_approval', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'approvers' => $approver,
-        ))->with('page', 'EOC Approval Monitoring')->with('head', 'Extra Order');
+        return view(
+            'extra_order.monitoring_approval',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'approvers' => $approver,
+            )
+        )->with('page', 'EOC Approval Monitoring')->with('head', 'Extra Order');
     }
 
     public function indexShortageMonitoring()
@@ -184,11 +191,14 @@ class ExtraOrderController extends Controller
 
         $storage_location = StorageLocation::where('category', 'WIP')->get();
 
-        return view('extra_order.monitoring_shortage', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'storage_locations' => $storage_location,
-        ))->with('page', 'EOC Approval Monitoring')->with('head', 'Extra Order');
+        return view(
+            'extra_order.monitoring_shortage',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'storage_locations' => $storage_location,
+            )
+        )->with('page', 'EOC Approval Monitoring')->with('head', 'Extra Order');
     }
 
     public function indexSendingApplication()
@@ -200,14 +210,17 @@ class ExtraOrderController extends Controller
             ->whereNull('deleted_at')
             ->get();
 
-        return view('extra_order.sending_application', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'destinations' => $destination,
-            'shipment_conditions' => $this->shipment_condition,
-            'payment_terms' => $this->payment_term,
-            'freights' => $this->freight,
-        ))->with('page', 'Extra Order Sending Aplication')->with('head', 'Extra Order');
+        return view(
+            'extra_order.sending_application',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'destinations' => $destination,
+                'shipment_conditions' => $this->shipment_condition,
+                'payment_terms' => $this->payment_term,
+                'freights' => $this->freight,
+            )
+        )->with('page', 'Extra Order Sending Aplication')->with('head', 'Extra Order');
     }
 
     public function indexCompletionPage()
@@ -234,12 +247,15 @@ class ExtraOrderController extends Controller
             AND materials.hpl IN ( 'MP', 'SUBASSY-CL', 'VN-ASSY', 'SUBASSY-SX', 'CL-BODY', 'SUBASSY-FL', 'ASSY-SX', 'ZPRO', 'MPRO', 'WELDING', 'BPRO', 'VN-INJECTION', 'RC ASSY' )
             AND ( materials.kd_name IS NULL OR materials.kd_name != 'SINGLE')");
 
-        return view('extra_order.completion_page', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'storage_locations' => $storage_location,
-            'volumes' => $volume,
-        ))->with('page', 'Extra Order Completion')->with('head', 'Extra Order');
+        return view(
+            'extra_order.completion_page',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'storage_locations' => $storage_location,
+                'volumes' => $volume,
+            )
+        )->with('page', 'Extra Order Completion')->with('head', 'Extra Order');
     }
 
     public function indexStuffingPage()
@@ -256,11 +272,14 @@ class ExtraOrderController extends Controller
             ->whereNull('status')
             ->get();
 
-        return view('extra_order.stuffing_page', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'container_schedules' => $container_schedules,
-        ))->with('page', 'Extra Order Stuffing')->with('head', 'Extra Order');
+        return view(
+            'extra_order.stuffing_page',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'container_schedules' => $container_schedules,
+            )
+        )->with('page', 'Extra Order Stuffing')->with('head', 'Extra Order');
     }
 
     public function indexDeliveryPage()
@@ -268,10 +287,13 @@ class ExtraOrderController extends Controller
         $title = 'Extra Order Delivery';
         $title_jp = 'エキストラオーダーデリバリー';
 
-        return view('extra_order.delivery_page', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-        ))->with('page', 'Extra Order Delivery')->with('head', 'Extra Order');
+        return view(
+            'extra_order.delivery_page',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+            )
+        )->with('page', 'Extra Order Delivery')->with('head', 'Extra Order');
     }
 
     public function indexExtraOrder()
@@ -315,17 +337,20 @@ class ExtraOrderController extends Controller
 
         $destinations = db::table('destinations')->whereNull('deleted_at')->get();
 
-        return view('extra_order.index_new', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'now' => date('Y-m-d'),
-            'materials' => $materials,
-            'user' => Auth::user(),
-            'prices' => $prices,
-            'buyers' => $buyers,
-            'po_uploaders' => $po_uploaders,
-            'destinations' => $destinations,
-        ))->with('page', 'Extra Order')->with('head', 'Extra Order');
+        return view(
+            'extra_order.index_new',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'now' => date('Y-m-d'),
+                'materials' => $materials,
+                'user' => Auth::user(),
+                'prices' => $prices,
+                'buyers' => $buyers,
+                'po_uploaders' => $po_uploaders,
+                'destinations' => $destinations,
+            )
+        )->with('page', 'Extra Order')->with('head', 'Extra Order');
     }
 
     public function indexUploadPo(Request $request)
@@ -345,33 +370,42 @@ class ExtraOrderController extends Controller
            GROUP BY eo_number");
 
         if (strlen($extra_order->po_number) > 0) {
-            return view('extra_order.upload_po_notification', array(
-                'title' => 'PO Extra Order',
-                'title_jp' => 'エキストラオーダーの購入依頼書',
-                'code' => '2',
-                'eo_number' => $eo_number,
-            ))->with('page', 'Extra Order')->with('head', 'PO Extra Order');
+            return view(
+                'extra_order.upload_po_notification',
+                array(
+                    'title' => 'PO Extra Order',
+                    'title_jp' => 'エキストラオーダーの購入依頼書',
+                    'code' => '2',
+                    'eo_number' => $eo_number,
+                )
+            )->with('page', 'Extra Order')->with('head', 'PO Extra Order');
         } else {
-            return view('extra_order.upload_po', array(
-                'title' => $title,
-                'title_jp' => $title_jp,
-                'extra_order' => $extra_order,
-                'detail' => $detail,
-                'approval' => $approval,
-                'progress' => $progress,
-                'user' => $user,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order');
+            return view(
+                'extra_order.upload_po',
+                array(
+                    'title' => $title,
+                    'title_jp' => $title_jp,
+                    'extra_order' => $extra_order,
+                    'detail' => $detail,
+                    'approval' => $approval,
+                    'progress' => $progress,
+                    'user' => $user,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order');
         }
     }
 
     public function indexPoNotification($eo_number)
     {
-        return view('extra_order.upload_po_notification', array(
-            'title' => 'PO Extra Order',
-            'title_jp' => 'エキストラオーダーの購入依頼書',
-            'code' => '1',
-            'eo_number' => $eo_number,
-        ))->with('page', 'Extra Order')->with('head', 'PO Extra Order');
+        return view(
+            'extra_order.upload_po_notification',
+            array(
+                'title' => 'PO Extra Order',
+                'title_jp' => 'エキストラオーダーの購入依頼書',
+                'code' => '1',
+                'eo_number' => $eo_number,
+            )
+        )->with('page', 'Extra Order')->with('head', 'PO Extra Order');
     }
 
     public function indexExtraOrderDetail($eo_number)
@@ -395,17 +429,20 @@ class ExtraOrderController extends Controller
            WHERE eo_number = '" . $eo_number . "'
            GROUP BY eo_number");
 
-        return view('extra_order.detail', array(
-            'title' => $title,
-            'title_jp' => $title_jp,
-            'extra_order' => $extra_order,
-            'detail' => $detail,
-            'timeline' => $timeline,
-            'approval' => $approval,
-            'progress' => $progress,
-            'user' => $user,
-            'note' => $string = trim(preg_replace('/\s\s+/', '<br>', $extra_order->remark)),
-        ))->with('page', 'Extra Order')->with('head', 'Extra Order');
+        return view(
+            'extra_order.detail',
+            array(
+                'title' => $title,
+                'title_jp' => $title_jp,
+                'extra_order' => $extra_order,
+                'detail' => $detail,
+                'timeline' => $timeline,
+                'approval' => $approval,
+                'progress' => $progress,
+                'user' => $user,
+                'note' => $string = trim(preg_replace('/\s\s+/', '<br>', $extra_order->remark)),
+            )
+        )->with('page', 'Extra Order')->with('head', 'Extra Order');
     }
 
     public function indexEocPdf($eo_number)
@@ -602,13 +639,16 @@ class ExtraOrderController extends Controller
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
 
-        $pdf->loadView('extra_order.pdf_eoc', array(
-            'extra_order' => $extra_order,
-            'detail' => $detail,
-            'approval_kage' => $approval_kage,
-            'approval' => $new_approval,
-            'prepared_at' => $approval[0]->created_at->format('Y-m-d H:i:s'),
-        ));
+        $pdf->loadView(
+            'extra_order.pdf_eoc',
+            array(
+                'extra_order' => $extra_order,
+                'detail' => $detail,
+                'approval_kage' => $approval_kage,
+                'approval' => $new_approval,
+                'prepared_at' => $approval[0]->created_at->format('Y-m-d H:i:s'),
+            )
+        );
         return $pdf->stream("EOC_" . $extra_order->eo_number . ".pdf");
     }
 
@@ -640,12 +680,15 @@ class ExtraOrderController extends Controller
         //     'destination' => $destination,
         // ))->with('page', 'Extra Order')->with('head', 'Extra Order');
 
-        $pdf->loadView('extra_order.pdf_send_app', array(
-            'send_app' => $send_app,
-            'send_app_detail' => $send_app_detail,
-            'send_app_log' => $send_app_log,
-            'destination' => $destination,
-        ));
+        $pdf->loadView(
+            'extra_order.pdf_send_app',
+            array(
+                'send_app' => $send_app,
+                'send_app_detail' => $send_app_detail,
+                'send_app_log' => $send_app_log,
+                'destination' => $destination,
+            )
+        );
         return $pdf->stream($send_app_no . ".pdf");
     }
 
@@ -663,12 +706,15 @@ class ExtraOrderController extends Controller
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
 
-        $pdf->loadView('extra_order.pdf_label', array(
-            'eo_number_sequence' => $eo_number_sequence,
-            'extra_order' => $extra_order,
-            'extra_order_detail' => $extra_order_detail,
-            'sequences' => $sequences,
-        ));
+        $pdf->loadView(
+            'extra_order.pdf_label',
+            array(
+                'eo_number_sequence' => $eo_number_sequence,
+                'extra_order' => $extra_order,
+                'extra_order_detail' => $extra_order_detail,
+                'sequences' => $sequences,
+            )
+        );
         return $pdf->stream($eo_number_sequence . ".pdf");
 
         // return view('extra_order.pdf_label', array(
@@ -743,16 +789,16 @@ class ExtraOrderController extends Controller
             $st_to = date('Y-m-d', strtotime($request->get('stuffing_to')));
             $send_app = $send_app->where('sending_applications.st_date', '<=', $st_to);
         }
-        if (count($request->get('search_status')) > 0) {
+        if ($request->get('search_status') != null) {
             $send_app = $send_app->whereIn('extra_order_approvals.status', '=', $request->get('search_status'));
         }
-        if (count($request->get('search_payment_term')) > 0) {
+        if ($request->get('search_payment_term') != null) {
             $send_app = $send_app->whereIn('extra_order_approvals.payment_term', '=', $request->get('search_payment_term'));
         }
-        if (count($request->get('search_ship_by')) > 0) {
+        if ($request->get('search_ship_by') != null) {
             $send_app = $send_app->whereIn('extra_order_approvals.ship_by', '=', $request->get('search_ship_by'));
         }
-        if (count($request->get('search_destination')) > 0) {
+        if ($request->get('search_destination') != null) {
             $send_app = $send_app->whereIn('extra_order_approvals.destination_code', '=', $request->get('search_destination'));
         }
 
@@ -1395,7 +1441,7 @@ class ExtraOrderController extends Controller
                 'eo_buyers' => $eo_buyers,
             );
             return Response::json($response);
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -1960,12 +2006,15 @@ class ExtraOrderController extends Controller
             ];
             return view('extra_order.reject_po', array('data' => $data));
         } else {
-            return view('extra_order.notification', array(
-                'title' => 'PO Extra Order',
-                'title_jp' => 'PO エキストラオーダー',
-                'code' => 102,
-                'approval' => $extra_order,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'PO Extra Order',
+                    'title_jp' => 'PO エキストラオーダー',
+                    'code' => 102,
+                    'approval' => $extra_order,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
         }
     }
 
@@ -1977,11 +2026,14 @@ class ExtraOrderController extends Controller
             ->get();
 
         if (count($boms) == 0) {
-            return view('extra_order.bom_multi_level', array(
-                'title' => 'Multi-Level BOM Not Found',
-                'title_jp' => '',
-                'code' => 0,
-            ))->with('page', 'Extra Order')->with('head', 'Multi-Level BOM');
+            return view(
+                'extra_order.bom_multi_level',
+                array(
+                    'title' => 'Multi-Level BOM Not Found',
+                    'title_jp' => '',
+                    'code' => 0,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Multi-Level BOM');
         }
 
         $mpdl = MaterialPlantDataList::get();
@@ -2042,11 +2094,14 @@ class ExtraOrderController extends Controller
             $checks = $temps;
         }
 
-        return view('extra_order.bom_multi_level', array(
-            'code' => 1,
-            'bom' => $multilevels,
-            'mpdl' => $mpdl_formated,
-        ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+        return view(
+            'extra_order.bom_multi_level',
+            array(
+                'code' => 1,
+                'bom' => $multilevels,
+                'mpdl' => $mpdl_formated,
+            )
+        )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
 
     }
 
@@ -2818,20 +2873,26 @@ class ExtraOrderController extends Controller
 
         if ($send_app->status >= 4) {
             // Sudah ada shipment doc
-            return view('extra_order.notification', array(
-                'title' => 'Extra Order Sending Application',
-                'title_jp' => 'エキストラオーダー出荷申請書',
-                'code' => 206,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'Extra Order Sending Application',
+                    'title_jp' => 'エキストラオーダー出荷申請書',
+                    'code' => 206,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
         }
 
         if (!in_array(strtoupper(Auth::user()->role_code), ['S-LOG', 'C-LOG', 'S-MIS'])) {
             // Tidak ada akses
-            return view('extra_order.notification', array(
-                'title' => 'Extra Order Sending Application',
-                'title_jp' => 'エキストラオーダー出荷申請書',
-                'code' => 201,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'Extra Order Sending Application',
+                    'title_jp' => 'エキストラオーダー出荷申請書',
+                    'code' => 201,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
         }
 
         if (strtolower($status) == 'approve') {
@@ -2887,20 +2948,26 @@ class ExtraOrderController extends Controller
                     ->send(new SendEmail($data, 'delete_sending_application'));
 
                 DB::commit();
-                return view('extra_order.notification', array(
-                    'title' => 'Extra Order Sending Application',
-                    'title_jp' => 'エキストラオーダー出荷申請書',
-                    'code' => 204,
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'Extra Order Sending Application',
+                        'title_jp' => 'エキストラオーダー出荷申請書',
+                        'code' => 204,
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
 
             } catch (Exception $e) {
                 DB::rollback();
-                return view('extra_order.notification', array(
-                    'title' => 'Extra Order Sending Application',
-                    'title_jp' => 'エキストラオーダー出荷申請書',
-                    'code' => 205,
-                    'message' => $e->getMessage(),
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'Extra Order Sending Application',
+                        'title_jp' => 'エキストラオーダー出荷申請書',
+                        'code' => 205,
+                        'message' => $e->getMessage(),
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
 
             }
 
@@ -2913,28 +2980,37 @@ class ExtraOrderController extends Controller
             $body .= 'Requests for deletion sending application number <b>' . $send_app_no . '</b><br>Already <b>Rejected by ' . ucwords(Auth::user()->name) . '</b><br>Please contact the related PIC for this problem.';
             $body .= '</center>';
 
-            Mail::raw([], function ($message) use ($title, $body) {
-                $message->from('mis@ympi.co.id', 'PT. Yamaha Musical Products Indonesia');
-                $message->to($this->pc);
-                $message->cc([Auth::user()->email]);
-                $message->bcc(['ympi-mis-ML@music.yamaha.com']);
-                $message->subject($title);
-                $message->setBody($body, 'text/html');}
+            Mail::raw(
+                [],
+                function ($message) use ($title, $body) {
+                    $message->from('mis@ympi.co.id', 'PT. Yamaha Musical Products Indonesia');
+                    $message->to($this->pc);
+                    $message->cc([Auth::user()->email]);
+                    $message->bcc(['ympi-mis-ML@music.yamaha.com']);
+                    $message->subject($title);
+                    $message->setBody($body, 'text/html');
+                }
             );
 
-            return view('extra_order.notification', array(
-                'title' => 'Extra Order Sending Application',
-                'title_jp' => 'エキストラオーダー出荷申請書',
-                'code' => 203,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'Extra Order Sending Application',
+                    'title_jp' => 'エキストラオーダー出荷申請書',
+                    'code' => 203,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
 
         } else {
             // Link tidak valid
-            return view('extra_order.notification', array(
-                'title' => 'Extra Order Sending Application',
-                'title_jp' => 'エキストラオーダー出荷申請書',
-                'code' => 202,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'Extra Order Sending Application',
+                    'title_jp' => 'エキストラオーダー出荷申請書',
+                    'code' => 202,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
 
         }
 
@@ -3344,7 +3420,7 @@ class ExtraOrderController extends Controller
                     'message' => 'Completion extra order canceled successfully',
                 );
                 return Response::json($response);
-            } catch (\Exception$e) {
+            } catch (\Exception $e) {
                 DB::rollback();
                 $response = array(
                     'status' => false,
@@ -3459,7 +3535,7 @@ class ExtraOrderController extends Controller
                     'message' => 'Transfer extra order canceled successfully from FSTK',
                 );
                 return Response::json($response);
-            } catch (\Exception$e) {
+            } catch (\Exception $e) {
                 DB::rollback();
                 $response = array(
                     'status' => false,
@@ -3516,7 +3592,7 @@ class ExtraOrderController extends Controller
                     'message' => 'Stuffing extra order canceled successfully',
                 );
                 return Response::json($response);
-            } catch (\Exception$e) {
+            } catch (\Exception $e) {
                 DB::rollback();
                 $response = array(
                     'status' => false,
@@ -3619,7 +3695,7 @@ class ExtraOrderController extends Controller
                     'message' => 'Extra Order number successfully transferred from FSTK',
                 );
                 return Response::json($response);
-            } catch (\Exception$e) {
+            } catch (\Exception $e) {
                 DB::rollback();
                 $response = array(
                     'status' => false,
@@ -3846,7 +3922,7 @@ class ExtraOrderController extends Controller
                     'message' => 'Extra Order number successfully transferred to FSTK',
                 );
                 return Response::json($response);
-            } catch (\Exception$e) {
+            } catch (\Exception $e) {
                 DB::rollback();
                 $response = array(
                     'status' => false,
@@ -4133,12 +4209,15 @@ class ExtraOrderController extends Controller
                     ])
                     ->send(new SendEmail($data, 'hold_comment_eoc'));
 
-                return view('extra_order.notification', array(
-                    'title' => 'Extra Order Confirmation',
-                    'title_jp' => 'エキストラオーダー確認',
-                    'code' => 6,
-                    'approval' => $approval,
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'Extra Order Confirmation',
+                        'title_jp' => 'エキストラオーダー確認',
+                        'code' => 6,
+                        'approval' => $approval,
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
             } catch (Exception $e) {
                 $response = array(
                     'status' => false,
@@ -4163,12 +4242,15 @@ class ExtraOrderController extends Controller
                     ])
                     ->send(new SendEmail($data, 'hold_comment_eoc'));
 
-                return view('extra_order.notification', array(
-                    'title' => 'Extra Order Confirmation',
-                    'title_jp' => 'エキストラオーダー確認',
-                    'code' => 7,
-                    'approval' => $approval,
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'Extra Order Confirmation',
+                        'title_jp' => 'エキストラオーダー確認',
+                        'code' => 7,
+                        'approval' => $approval,
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
             } catch (Exception $e) {
                 $response = array(
                     'status' => false,
@@ -4192,32 +4274,41 @@ class ExtraOrderController extends Controller
 
         //Tidak ada autorisasi
         if ((!str_contains(Auth::user()->role_code, 'MIS')) && (strtoupper(Auth::user()->username) != strtoupper($approval->approver_id))) {
-            return view('extra_order.notification', array(
-                'title' => 'Extra Order Confirmation',
-                'title_jp' => 'エキストラオーダー確認',
-                'code' => 3,
-                'approval' => $approval,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'Extra Order Confirmation',
+                    'title_jp' => 'エキストラオーダー確認',
+                    'code' => 3,
+                    'approval' => $approval,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
         }
 
         //Sudah approve
         if ($approval->status == 'Approved') {
-            return view('extra_order.notification', array(
-                'title' => 'Extra Order Confirmation',
-                'title_jp' => 'エキストラオーダー確認',
-                'code' => 2,
-                'approval' => $approval,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'Extra Order Confirmation',
+                    'title_jp' => 'エキストラオーダー確認',
+                    'code' => 2,
+                    'approval' => $approval,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
         }
 
         //Sudah reject
         if ($approval->status == 'Rejected') {
-            return view('extra_order.notification', array(
-                'title' => 'Extra Order Confirmation',
-                'title_jp' => 'エキストラオーダー確認',
-                'code' => 0,
-                'approval' => $approval,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'Extra Order Confirmation',
+                    'title_jp' => 'エキストラオーダー確認',
+                    'code' => 0,
+                    'approval' => $approval,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
         }
 
         //Approver sebelumnya belum approve
@@ -4232,12 +4323,15 @@ class ExtraOrderController extends Controller
                 ->get();
 
             if (count($total) != count($approved)) {
-                return view('extra_order.notification', array(
-                    'title' => 'Extra Order Confirmation',
-                    'title_jp' => 'エキストラオーダー確認',
-                    'code' => 4,
-                    'approval' => $approval,
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'Extra Order Confirmation',
+                        'title_jp' => 'エキストラオーダー確認',
+                        'code' => 4,
+                        'approval' => $approval,
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
             }
         }
 
@@ -4515,13 +4609,16 @@ class ExtraOrderController extends Controller
                     }
                 }
 
-                return view('extra_order.notification', array(
-                    'title' => 'Extra Order Confirmation',
-                    'title_jp' => 'エキストラオーダー確認',
-                    'code' => 1,
-                    'approval' => $approval,
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
-            } catch (\Exception$e) {
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'Extra Order Confirmation',
+                        'title_jp' => 'エキストラオーダー確認',
+                        'code' => 1,
+                        'approval' => $approval,
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+            } catch (\Exception $e) {
                 $response = array(
                     'status' => false,
                     'message' => $e->getMessage(),
@@ -4572,12 +4669,15 @@ class ExtraOrderController extends Controller
                     ])
                     ->send(new SendEmail($data, 'eo_approval_eoc_reject'));
 
-                return view('extra_order.notification', array(
-                    'title' => 'Extra Order Confirmation',
-                    'title_jp' => 'エキストラオーダー確認',
-                    'code' => 5,
-                    'approval' => $approval,
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'Extra Order Confirmation',
+                        'title_jp' => 'エキストラオーダー確認',
+                        'code' => 5,
+                        'approval' => $approval,
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
             } catch (Exception $e) {
                 $response = array(
                     'status' => false,
@@ -4792,7 +4892,7 @@ class ExtraOrderController extends Controller
             );
             return Response::json($response);
 
-        } catch (\Throwable$th) {
+        } catch (Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -5295,7 +5395,7 @@ class ExtraOrderController extends Controller
                 'eo_number' => $eo_number,
             );
             return Response::json($response);
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -5362,12 +5462,15 @@ class ExtraOrderController extends Controller
             ])
             ->send(new SendEmail($data, 'eo_reupload_po'));
 
-        return view('extra_order.notification', array(
-            'title' => 'PO Extra Order',
-            'title_jp' => 'PO エキストラオーダー',
-            'code' => 103,
-            'approval' => $extra_order,
-        ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+        return view(
+            'extra_order.notification',
+            array(
+                'title' => 'PO Extra Order',
+                'title_jp' => 'PO エキストラオーダー',
+                'code' => 103,
+                'approval' => $extra_order,
+            )
+        )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
     }
 
     public function inputApprovalPo(Request $request)
@@ -5379,12 +5482,15 @@ class ExtraOrderController extends Controller
             $extra_order_detail = ExtraOrderDetail::where('eo_number', $extra_order->eo_number)->get();
 
             if ($extra_order_detail[0]->due_date != null) {
-                return view('extra_order.notification', array(
-                    'title' => 'PO Extra Order',
-                    'title_jp' => 'PO エキストラオーダー',
-                    'code' => 102,
-                    'approval' => $extra_order,
-                ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+                return view(
+                    'extra_order.notification',
+                    array(
+                        'title' => 'PO Extra Order',
+                        'title_jp' => 'PO エキストラオーダー',
+                        'code' => 102,
+                        'approval' => $extra_order,
+                    )
+                )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
             }
 
             //Cek Extend ETD
@@ -5457,13 +5563,16 @@ class ExtraOrderController extends Controller
             ]);
             $extra_order_timeline->save();
 
-            return view('extra_order.notification', array(
-                'title' => 'PO Extra Order',
-                'title_jp' => 'PO エキストラオーダー',
-                'code' => 101,
-                'approval' => $extra_order,
-            ))->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
-        } catch (\Exception$e) {
+            return view(
+                'extra_order.notification',
+                array(
+                    'title' => 'PO Extra Order',
+                    'title_jp' => 'PO エキストラオーダー',
+                    'code' => 101,
+                    'approval' => $extra_order,
+                )
+            )->with('page', 'Extra Order')->with('head', 'Extra Order Confirmation');
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -5558,7 +5667,7 @@ class ExtraOrderController extends Controller
                 'eo_number' => $eo_number,
             );
             return Response::json($response);
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -5731,7 +5840,7 @@ class ExtraOrderController extends Controller
             $extra_order->save();
             $extra_order_timeline->save();
 
-            if (count($request->file('attachment')) > 0) {
+            if ($request->file('attachment') != null) {
                 $filename = "";
                 $file_destination = 'files/extra_order/attachment';
                 $file = $request->file('attachment');
@@ -5781,7 +5890,7 @@ class ExtraOrderController extends Controller
                 'tes' => $filename,
             );
             return Response::json($response);
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
             $response = array(
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -6121,13 +6230,16 @@ class ExtraOrderController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->setPaper('A4', 'portrait');
         // $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-        $pdf->loadView('extra_order.pdf_eoc', array(
-            'extra_order' => $extra_order,
-            'detail' => $detail,
-            'approval_kage' => $approval_kage,
-            'approval' => $new_approval,
-            'prepared_at' => $approval[0]->created_at->format('Y-m-d H:i:s'),
-        ));
+        $pdf->loadView(
+            'extra_order.pdf_eoc',
+            array(
+                'extra_order' => $extra_order,
+                'detail' => $detail,
+                'approval_kage' => $approval_kage,
+                'approval' => $new_approval,
+                'prepared_at' => $approval[0]->created_at->format('Y-m-d H:i:s'),
+            )
+        );
         $pdf->save(public_path() . "/files/extra_order/eoc/EOC_" . $eo_number . ".pdf");
     }
 

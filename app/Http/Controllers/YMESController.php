@@ -482,7 +482,7 @@ class YMESController extends Controller
             $where_product = "AND serial_number IS NULL";
         }
 
-        if (count($request->get('filterCategory')) > 0) {
+        if ($request->get('filterCategory') != null) {
             $categories = $request->get('filterCategory');
             for ($i = 0; $i < count($categories); $i++) {
                 $where_category = $where_category . "'" . $categories[$i] . "'";
@@ -505,7 +505,7 @@ class YMESController extends Controller
             $entry_date_to = date('Y-m-d H:i:s', strtotime($entry_date[1]));
             $where_entry_date = "AND created_at >= '" . $entry_date_from . "' AND created_at <= '" . $entry_date_to . "'";
         }
-        if (count($request->get('filterMaterial')) > 0) {
+        if ($request->get('filterMaterial') != null) {
             $material_numbers = $request->get('filterMaterial');
             for ($i = 0; $i < count($material_numbers); $i++) {
                 $where_material_number = $where_material_number . "'" . $material_numbers[$i] . "'";
@@ -515,7 +515,7 @@ class YMESController extends Controller
             }
             $where_material_number = " AND material_number IN (" . $where_material_number . ") ";
         }
-        if (count($request->get('filterIssue')) > 0) {
+        if ($request->get('filterIssue') != null) {
             $issue_locations = $request->get('filterIssue');
             for ($i = 0; $i < count($issue_locations); $i++) {
                 $where_issue_location = $where_issue_location . "'" . $issue_locations[$i] . "'";
@@ -525,7 +525,7 @@ class YMESController extends Controller
             }
             $where_issue_location = " AND issue_location IN (" . $where_issue_location . ") ";
         }
-        if (count($request->get('filterReceive')) > 0) {
+        if ($request->get('filterReceive') != null) {
             $receive_locations = $request->get('filterReceive');
             for ($i = 0; $i < count($receive_locations); $i++) {
                 $where_receive_location = $where_receive_location . "'" . $receive_locations[$i] . "'";
@@ -704,7 +704,7 @@ class YMESController extends Controller
         $where_issue_location = '';
         $where_material_number = '';
 
-        if (count($request->get('issue_location')) > 0) {
+        if ($request->get('issue_location') != null) {
             $issue_locations = $request->get('issue_location');
             for ($i = 0; $i < count($issue_locations); $i++) {
                 $where_issue_location = $where_issue_location . "'" . $issue_locations[$i] . "'";
@@ -715,7 +715,7 @@ class YMESController extends Controller
             $where_issue_location = " AND issue_location IN (" . $where_issue_location . ") ";
         }
 
-        if (count($request->get('material_number')) > 0) {
+        if ($request->get('material_number') != null) {
             $material_numbers = $request->get('material_number');
             for ($i = 0; $i < count($material_numbers); $i++) {
                 $where_material_number = $where_material_number . "'" . $material_numbers[$i] . "'";
