@@ -32,7 +32,7 @@ class OvertimeHoliday extends Command
         ->select('week_date', 'remark')
         ->first();
 
-        if (count($calendars) > 0) {
+        if ($calendars != null) {
 
             if ($calendars->remark != "H") {
 
@@ -89,7 +89,7 @@ class OvertimeHoliday extends Command
                     ");
 
 
-                 if (count($details) > 0) {
+                 if ($details != null) {
 
                      $date_hours = date("H");
                      if ($date_hours == "05") {
@@ -98,8 +98,6 @@ class OvertimeHoliday extends Command
                         $jam1 = date('Y-m-d H:i:s', strtotime($day_today . date('H:i:s')));
                     }
                     for ($j=0; $j < count($details); $j++) { 
-
-
                     if ($details[$j]->SHIFT_OVTPLAN == "Shift_1" && $details[$j]->food == "YA") {
                         $data3 = OvertimeExtrafoodAttendance::firstOrNew(
                             [
@@ -373,7 +371,7 @@ class OvertimeHoliday extends Command
 
 
 
-                if (count($details) > 0) {
+                if ($details != null) {
                     for ($j=0; $j < count($details); $j++) { 
                      $date_hours = date("H");
 
@@ -550,7 +548,7 @@ class OvertimeHoliday extends Command
                     OR ( attend_code LIKE "%Shift_3%" AND shiftdaily_code NOT LIKE "%OFF%" AND shift_date = "'.$nextday.'" ) 
                     OR (attend_code IS NULL AND shiftdaily_code NOT LIKE "%OFF%" AND shift_date = "'.$nextday.'")');
 
-                if (count($data_sunfish) > 0) {
+                if ($data_sunfish != null) {
                     for ($i=0; $i < count($data_sunfish); $i++) {
                        $date_hours = date("H");
 
@@ -677,7 +675,7 @@ class OvertimeHoliday extends Command
     ");
 
 
-   if (count($details) > 0) {
+   if ($details != null) {
     for ($j=0; $j < count($details); $j++) { 
         $date_hours = date("H");
 
