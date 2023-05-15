@@ -4385,14 +4385,14 @@ public function App_Keluarga_1(Request $request, $id){
                     $leave_request_complete = HrLeaveRequest::select('hr_leave_requests.*','departments.department_shortname','departments.department_name')->leftjoin('departments','departments.department_name','hr_leave_requests.department')->where('hr_leave_requests.remark','Fully Approved')
                     ->orderByRaw('hr_leave_requests.time_departure desc,hr_leave_requests.remark desc,hr_leave_requests.request_id desc')
                     ->whereDate('hr_leave_requests.created_at','<=',date('Y-m-d'))
-                    ->whereDate('hr_leave_requests.created_at','>=',date('Y-m-d',strtotime('- 15 DAYS')))
+                    ->whereDate('hr_leave_requests.created_at','>=',date('Y-m-d',strtotime('- 1 DAYS')))
                     ->get();
                 }else if(str_contains($user->position,'Manager')){
                     $leave_request_complete = HrLeaveRequest::select('hr_leave_requests.*','departments.department_shortname','departments.department_name')->
                     leftjoin('departments','departments.department_name','hr_leave_requests.department')
                     ->where('hr_leave_requests.remark','Fully Approved')->where('department_name',$user->department)
                     ->whereDate('hr_leave_requests.created_at','<=',date('Y-m-d'))
-                    ->whereDate('hr_leave_requests.created_at','>=',date('Y-m-d',strtotime('- 15 DAYS')))
+                    ->whereDate('hr_leave_requests.created_at','>=',date('Y-m-d',strtotime('- 1 DAYS')))
                     ->orwhere('hr_leave_requests.created_by',Auth::user()->id)
                     ->orderByRaw('hr_leave_requests.time_departure desc,hr_leave_requests.remark desc,hr_leave_requests.request_id desc')->
                     get();
@@ -4401,7 +4401,7 @@ public function App_Keluarga_1(Request $request, $id){
                     ->leftjoin('departments','departments.department_name','hr_leave_requests.department')
                     ->where('hr_leave_requests.remark','Fully Approved')
                     ->whereDate('hr_leave_requests.created_at','<=',date('Y-m-d'))
-                    ->whereDate('hr_leave_requests.created_at','>=',date('Y-m-d',strtotime('- 15 DAYS')))
+                    ->whereDate('hr_leave_requests.created_at','>=',date('Y-m-d',strtotime('- 1 DAYS')))
                     ->orderBy('hr_leave_requests.remark','desc')
                     ->orderByRaw('hr_leave_requests.time_departure desc,hr_leave_requests.remark desc,hr_leave_requests.request_id desc')->
                     get();
