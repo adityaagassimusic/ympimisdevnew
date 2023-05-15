@@ -9,6 +9,8 @@ class Sakurentsu extends Model
 {
 	use SoftDeletes;
 
+	protected $table = "sakurentsus";
+
 	protected $fillable = [
 		'sakurentsu_number', 'title_jp', 'title', 'applicant','file','upload_date','target_date','file_translate','translator','translate_date','category', 'send_status','pic','status','position','remark','additional_file','notes','delete_note','created_by'
 	];
