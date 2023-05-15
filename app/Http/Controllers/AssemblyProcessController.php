@@ -10633,7 +10633,7 @@ class AssemblyProcessController extends Controller
                 $employee = db::table('assembly_operators')->join('employee_syncs', 'assembly_operators.employee_id', '=', 'employee_syncs.employee_id')->where('tag', '=', strtoupper($this->dec2hex($request->get('employee_id'))))->first();
             }
 
-            if ($employee != null) {
+            if ($employee == null) {
                 $response = array(
                     'status' => false,
                     'message' => 'Employee Tidak Ditemukan',
