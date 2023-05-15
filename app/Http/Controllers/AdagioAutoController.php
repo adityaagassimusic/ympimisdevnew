@@ -1589,7 +1589,8 @@ public function AdagioDataResume(Request $request){
           }
 
           $no = '';
-          if (count($request->get('no_dok')) > 0) {
+          // if (count($request->get('no_dok')) > 0) {
+          if ($request->get('no_dok') != null) {
             $no = $request->get('no_dok');
           }else{
             $no = $no_approval;
