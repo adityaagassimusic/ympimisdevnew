@@ -6485,7 +6485,7 @@ public function approvalLeaveRequest($request_id,$remark)
             if ($approval->status == null) {
                 $approval->status = 'Approved';
                 $approval->approved_at = date('Y-m-d H:i:s');
-                if (count(Auth::user()->username) > 0) {
+                if (Auth::user()->username != null) {
                     $approval->real_approvers = Auth::user()->username;
                 }
                 $app_manager = HrLeaveRequestApproval::where('request_id',$request_id)->where('remark','Manager')->first();
@@ -6528,7 +6528,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'mei.rahayu@music.yamaha.com');
@@ -6540,7 +6540,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'budhi.apriyanto@music.yamaha.com');
@@ -6552,7 +6552,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6569,7 +6569,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'budhi.apriyanto@music.yamaha.com');
@@ -6581,7 +6581,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'arief.soekamto@music.yamaha.com');
@@ -6593,7 +6593,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'arief.soekamto@music.yamaha.com');
@@ -6605,7 +6605,7 @@ public function approvalLeaveRequest($request_id,$remark)
             if ($approval->status == null) {
                 $approval->status = 'Approved';
                 $approval->approved_at = date('Y-m-d H:i:s');
-                if (count(Auth::user()->username) > 0) {
+                if (Auth::user()->username != null) {
                     $approval->real_approvers = Auth::user()->username;
                 }
                 array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6627,7 +6627,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'mei.rahayu@music.yamaha.com');
@@ -6639,7 +6639,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'budhi.apriyanto@music.yamaha.com');
@@ -6651,7 +6651,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6668,7 +6668,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6685,7 +6685,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'arief.soekamto@music.yamaha.com');
@@ -6697,7 +6697,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'arief.soekamto@music.yamaha.com');
@@ -6709,7 +6709,7 @@ public function approvalLeaveRequest($request_id,$remark)
             if ($approval->status == null) {
                 $approval->status = 'Approved';
                 $approval->approved_at = date('Y-m-d H:i:s');
-                if (count(Auth::user()->username) > 0) {
+                if (Auth::user()->username != null) {
                     $approval->real_approvers = Auth::user()->username;
                 }
                 array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6731,7 +6731,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'mei.rahayu@music.yamaha.com');
@@ -6743,7 +6743,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'budhi.apriyanto@music.yamaha.com');
@@ -6755,7 +6755,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6772,7 +6772,7 @@ public function approvalLeaveRequest($request_id,$remark)
             //     if ($approval->status == null) {
             //         $approval->status = 'Approved';
             //         $approval->approved_at = date('Y-m-d H:i:s');
-            //         if (count(Auth::user()->username) > 0) {
+            //         if (Auth::user()->username != null) {
             //             $approval->real_approvers = Auth::user()->username;
             //         }
             //         array_push($mail_to, 'arief.soekamto@music.yamaha.com');
@@ -6793,7 +6793,7 @@ public function approvalLeaveRequest($request_id,$remark)
             if ($approval->status == null) {
                 $approval->status = 'Approved';
                 $approval->approved_at = date('Y-m-d H:i:s');
-                if (count(Auth::user()->username) > 0) {
+                if (Auth::user()->username != null) {
                     $approval->real_approvers = Auth::user()->username;
                 }
                 array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6814,7 +6814,7 @@ public function approvalLeaveRequest($request_id,$remark)
             if ($approval->status == null) {
                 $approval->status = 'Approved';
                 $approval->approved_at = date('Y-m-d H:i:s');
-                if (count(Auth::user()->username) > 0) {
+                if (Auth::user()->username != null) {
                     $approval->real_approvers = Auth::user()->username;
                 }
                 array_push($mail_to, 'mahendra.putra@music.yamaha.com');
@@ -6837,13 +6837,13 @@ public function approvalLeaveRequest($request_id,$remark)
         if ($remark == 'HR') {
             if ($approval->status == null) {
                 $employee_id = Auth::user()->username;
-                if (count($employee_id) > 0) {
+                if ($employee_id != null) {
                     $emp = EmployeeSync::where('employee_id',$employee_id)->first();
                     $approval->approver_id = strtoupper($employee_id);
                     $approval->approver_name = $emp->name;
                     $approval->status = 'Approved';
                     $approval->approved_at = date('Y-m-d H:i:s');
-                    if (count(Auth::user()->username) > 0) {
+                    if (Auth::user()->username != null) {
                         $approval->real_approvers = Auth::user()->username;
                     }
                     $remarks = 'Security';
@@ -6852,7 +6852,7 @@ public function approvalLeaveRequest($request_id,$remark)
                     $approval->approver_name = 'Mahendra Putra';
                     $approval->status = 'Approved';
                     $approval->approval_id = date('Y-m-d H:i:s');
-                    if (count(Auth::user()->username) > 0) {
+                    if (Auth::user()->username != null) {
                         $approval->real_approvers = Auth::user()->username;
                     }
                     $remarks = 'Security';
@@ -6959,13 +6959,13 @@ public function approvalLeaveRequest($request_id,$remark)
         if ($remark == 'GA') {
             if ($approval->status == null) {
                 $employee_id = Auth::user()->username;
-                if (count($employee_id) > 0) {
+                if ($employee_id != null) {
                     $emp = EmployeeSync::where('employee_id',$employee_id)->first();
                     $approval->approver_id = strtoupper($employee_id);
                     $approval->approver_name = $emp->name;
                     $approval->status = 'Approved';
                     $approval->approved_at = date('Y-m-d H:i:s');
-                    if (count(Auth::user()->username) > 0) {
+                    if (Auth::user()->username != null) {
                         $approval->real_approvers = Auth::user()->username;
                     }
                 }else{
@@ -6973,7 +6973,7 @@ public function approvalLeaveRequest($request_id,$remark)
                     $approval->approver_name = 'Heriyanto';
                     $approval->status = 'Approved';
                     $approval->approval_id = date('Y-m-d H:i:s');
-                    if (count(Auth::user()->username) > 0) {
+                    if (Auth::user()->username != null) {
                         $approval->real_approvers = Auth::user()->username;
                     }
                 }
