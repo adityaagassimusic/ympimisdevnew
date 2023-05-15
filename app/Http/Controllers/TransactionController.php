@@ -8,6 +8,7 @@ use App\InjectionInventory;
 use App\Material;
 use App\MaterialPlantDataList;
 use App\MiddleInventory;
+use App\NgList;
 use App\ReturnList;
 use App\ReturnLog;
 use App\ReturnMaterial;
@@ -25,7 +26,6 @@ use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
 use Response;
 use Yajra\DataTables\Exception;
-use App\NgList;
 
 class TransactionController extends Controller
 {
@@ -1153,7 +1153,6 @@ class TransactionController extends Controller
 
     public function inputCompletion(Request $request)
     {
-
         try {
             DB::connection('ympimis_2')->beginTransaction();
 
@@ -2881,12 +2880,12 @@ class TransactionController extends Controller
                         $category, $function, $action, $result_date, $slip_number, $serial_number, $material_number, $issue_location, $receive_location, $quantity, $remark, $created_by, $created_by_name, $synced, $synced_by, $material_description);
                     // YMES END
                 }
-                
+
                 $ng_quantity = 0;
                 $ng = explode(',', $return->ng);
                 foreach ($ng as $ng) {
-                    $ng_quantity += explode('_', $ng)[1];                    
-                }                
+                    $ng_quantity += explode('_', $ng)[1];
+                }
 
                 $return_log = new ReturnLog([
                     'return_id' => $return->id,
@@ -2907,7 +2906,7 @@ class TransactionController extends Controller
 
                 if ($return->receive_location == 'RC91') {
                     $invent = InjectionInventory::where('location', $return->receive_location)->where('material_number', $return->material_number)->first();
-                    if (count($invent) > 0) {
+                    if ($invent != 0) {
                         if ($invent->quantity <= 0) {
                             $invent->quantity = 0;
                         } else {
@@ -3124,7 +3123,7 @@ class TransactionController extends Controller
         $id = substr($request->get('id'), 2);
         $return = ReturnList::where('return_lists.id', '=', $id)
             ->leftJoin('users', 'users.id', '=', 'return_lists.created_by')
-            ->select('return_lists.id', 'return_lists.material_number', 'return_lists.material_description', 'return_lists.issue_location', 'return_lists.receive_location', 'return_lists.quantity', 'users.name', 'return_lists.created_at', 'return_lists.created_by','return_lists.ng')
+            ->select('return_lists.id', 'return_lists.material_number', 'return_lists.material_description', 'return_lists.issue_location', 'return_lists.receive_location', 'return_lists.quantity', 'users.name', 'return_lists.created_at', 'return_lists.created_by', 'return_lists.ng')
             ->first();
 
         if ($return) {
@@ -3250,20 +3249,20 @@ class TransactionController extends Controller
         $printer->text($description . "\n");
         $printer->feed(1);
 
-        if($ng){
+        if ($ng) {
             $printer->initialize();
             $printer->setEmphasis(true);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->setTextSize(1, 1);
             $printer->text("NG : \n");
-            
+
             $ng = explode(',', $ng);
-            $ng = array_map(function($item) {
+            $ng = array_map(function ($item) {
                 $item = explode('_', $item);
                 return $item[0] . '(' . $item[1] . ')';
             }, $ng);
             $ng = implode(',', $ng);
-            $printer->text($ng . "\n");        
+            $printer->text($ng . "\n");
         }
 
         $printer->text("\n");
@@ -3338,15 +3337,15 @@ class TransactionController extends Controller
         $printer->text($description . "\n");
         $printer->feed(1);
 
-        if($ng){
+        if ($ng) {
             $printer->initialize();
             $printer->setEmphasis(true);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->setTextSize(1, 1);
             $printer->text("NG : \n");
-            
+
             $ng = explode(',', $ng);
-            $ng = array_map(function($item) {
+            $ng = array_map(function ($item) {
                 $item = explode('_', $item);
                 return $item[0] . '(' . $item[1] . ')';
             }, $ng);
@@ -3439,7 +3438,7 @@ class TransactionController extends Controller
     }
 
     // public function printReturn(Request $request)
-    // {        
+    // {
     //     $id = Auth::id();
     //     try {
     //         $return = new ReturnList([
@@ -3474,31 +3473,30 @@ class TransactionController extends Controller
     // }
 
     public function printReturn(Request $request)
-    {                
+    {
         $ng_lists = $request->get('return_list');
-        
+
         $ng_lists = array_map(function ($ng_list) {
             return array('ng' => $ng_list['ng'], 'qty' => $ng_list['qty']);
-        }, $ng_lists);        
-        
+        }, $ng_lists);
+
         $quantity = array_sum(array_column($ng_lists, 'qty'));
 
-        if(!$quantity) {
+        if (!$quantity) {
             $quantity = $request->get('quantity');
         }
 
-        
         $ng_lists = array_filter($ng_lists, function ($ng_list) {
             return $ng_list['ng'] != 'OK';
         });
-        
+
         foreach ($ng_lists as $key => $value) {
             $ng[] = $value['ng'] . '_' . $value['qty'];
         }
         $ng = implode(',', $ng);
-        
+
         $id = Auth::id();
-        try {            
+        try {
             $return = new ReturnList([
                 'material_number' => $request->get('material'),
                 'material_description' => $request->get('description'),
@@ -3507,7 +3505,7 @@ class TransactionController extends Controller
                 'quantity' => $quantity,
                 'ng' => $ng,
                 'created_by' => $id,
-            ]);            
+            ]);
             $return->save();
 
             self::returnSlip($return->id, $return->material_number, $return->material_description, $return->issue_location, $return->receive_location, $return->quantity, $return->created_by, $return->ng);
@@ -3711,42 +3709,39 @@ class TransactionController extends Controller
     }
 
     public function fetchNGList(Request $request)
-    {        
-        try {            
+    {
+        try {
             $ng_lists = NgList::select(DB::raw('distinct(ng_name)'))
-            ->where('remark','return')
-            ->orderBy('ng_name', 'asc')
-            ->get();
+                ->where('remark', 'return')
+                ->orderBy('ng_name', 'asc')
+                ->get();
             // DB::raw('group_concat(storage_location) as storage_location'))
             // DB::raw('(group_concat(distinct(storage_location))) as storage_location'))
             // ->groupBy('ng_name')
             // ->get();
-
-            
 
             $response = array(
                 'status' => true,
                 'ng_lists' => $ng_lists,
             );
             return Response::json($response);
-        } catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             $response = array(
                 'status' => false,
                 'message' => $th->getMessage(),
             );
             return Response::json($response);
-        }    
-    }    
+        }
+    }
 
     public function indexReturnMonitoring()
     {
         $title = 'Return Monitoring';
         $title_jp = '??';
-               
 
         $storage_location = StorageLocation::select('storage_location', 'location')
-        ->where('category', 'WIP')
-        ->get();
+            ->where('category', 'WIP')
+            ->get();
 
         return view('return.return_monitoring', array(
             'title' => $title,
@@ -3755,49 +3750,49 @@ class TransactionController extends Controller
         ))->with('page', 'Return Monitoring');
     }
 
-    public function fetchMonitoringReturnLogs(Request $request){
+    public function fetchMonitoringReturnLogs(Request $request)
+    {
         try {
             $return_logs = ReturnLog::
-            leftJoin('return_materials' , 'return_logs.material_number', '=', 'return_materials.material_number')
-            ->leftJoin('material_plant_data_lists', 'return_logs.material_number', '=', 'material_plant_data_lists.material_number')
-            ->where('return_logs.remark', 'received')
-            ->where('return_logs.ng', '!=', '')
-            ->select(DB::raw('return_logs.material_number, 
+                leftJoin('return_materials', 'return_logs.material_number', '=', 'return_materials.material_number')
+                ->leftJoin('material_plant_data_lists', 'return_logs.material_number', '=', 'material_plant_data_lists.material_number')
+                ->where('return_logs.remark', 'received')
+                ->where('return_logs.ng', '!=', '')
+                ->select(DB::raw('return_logs.material_number,
                 material_plant_data_lists.material_description,
-                sum(return_logs.ng_quantity) as quantity, 
+                sum(return_logs.ng_quantity) as quantity,
                 sum(return_logs.ng_quantity * material_plant_data_lists.standard_price/1000) as amount,
                 material_plant_data_lists.standard_price,
-                group_concat(return_logs.ng) as ng, 
-                return_logs.issue_location, 
-                return_logs.receive_location, 
-                return_materials.material_category'))                
-            ->groupBy('return_logs.material_number', 'return_logs.issue_location', 'return_logs.receive_location', 'return_materials.material_category', 'material_plant_data_lists.standard_price', 'material_plant_data_lists.material_description')
-            ->orderBy('amount', 'desc')
-            ->limit(5);                                    
+                group_concat(return_logs.ng) as ng,
+                return_logs.issue_location,
+                return_logs.receive_location,
+                return_materials.material_category'))
+                ->groupBy('return_logs.material_number', 'return_logs.issue_location', 'return_logs.receive_location', 'return_materials.material_category', 'material_plant_data_lists.standard_price', 'material_plant_data_lists.material_description')
+                ->orderBy('amount', 'desc')
+                ->limit(5);
 
-            $material_category = $request->get('material_category');            
+            $material_category = $request->get('material_category');
             $location = $request->get('storage_location');
             $date_from = $request->get('date_from');
             $date_to = $request->get('date_to');
-            
-            
-            if($material_category != null){
+
+            if ($material_category != null) {
                 $return_logs = $return_logs->where('return_materials.material_category', '=', $material_category);
             }
-                        
-            if($location != null && $location != 'all'){
+
+            if ($location != null && $location != 'all') {
                 $return_logs = $return_logs->where('return_logs.issue_location', '=', $location);
             }
 
-            if($date_from != null && $date_to != null){
+            if ($date_from != null && $date_to != null) {
                 $return_logs = $return_logs
-                ->where(db::raw('date(return_logs.created_at)'), '>=', $date_from)
-                ->where(db::raw('date(return_logs.created_at)'), '<=', $date_to);
+                    ->where(db::raw('date(return_logs.created_at)'), '>=', $date_from)
+                    ->where(db::raw('date(return_logs.created_at)'), '<=', $date_to);
             }
 
             $return_logs = $return_logs->get();
 
-            if($return_logs == null){
+            if ($return_logs == null) {
                 $response = array(
                     'status' => false,
                     'message' => 'Data not found',
@@ -3811,7 +3806,7 @@ class TransactionController extends Controller
             );
 
             return Response::json($response);
-        } catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             $response = array(
                 'status' => false,
                 'message' => $th->getMessage(),
@@ -3821,21 +3816,21 @@ class TransactionController extends Controller
     }
 
     public function fetchMPDLList(Request $request)
-    {                
-        $material_number = $request->get('material_number');        
+    {
+        $material_number = $request->get('material_number');
 
         try {
             $mpdl_lists = MaterialPlantDataList::
-            select('material_number', 'material_description', 'storage_location', 'valcl', 'standard_price', 'created_by')                        
-            ->whereIn('material_number', $material_number)
-            ->get();
+                select('material_number', 'material_description', 'storage_location', 'valcl', 'standard_price', 'created_by')
+                ->whereIn('material_number', $material_number)
+                ->get();
 
             $response = array(
                 'status' => true,
                 'mpdl_lists' => $mpdl_lists,
             );
             return Response::json($response);
-        } catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             $response = array(
                 'status' => false,
                 'message' => $th->getMessage(),
@@ -3844,5 +3839,4 @@ class TransactionController extends Controller
         }
     }
 
-    
 }
