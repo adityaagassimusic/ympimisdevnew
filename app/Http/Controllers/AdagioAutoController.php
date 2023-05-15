@@ -2308,7 +2308,8 @@ public function AdagioDataResume(Request $request){
       $a = ApprApprovals::where('request_id', '=', $no_transaction)->wherenull('status')->take(1)->first();
       $b = ApprApprovals::where('request_id', '=', $no_transaction)->where('approver_id', '=', $id)->whereNotNull('status')->first();
 
-      if (count($a) > 0) {
+      // if (count($a) > 0) {
+      if ($a != null {
         if ($a->approver_id == $id) {
           $approvers = ApprApprovals::where('request_id', '=', $no_transaction)->wherenull('status')->take(1)->update([
             'status'    => 'Approved',
