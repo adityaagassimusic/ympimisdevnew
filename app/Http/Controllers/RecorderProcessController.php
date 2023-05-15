@@ -1559,7 +1559,7 @@ class RecorderProcessController extends Controller
           $pushpull = RcPushPullLog::orderBy('rc_push_pull_logs.id','DESC')->first();
           // var_dump($pushpull);
           // foreach ($pushpull as $pushpull) {
-            if (count($pushpull) == 0) {
+            if ($pushpull == null) {
               $valuebefore = 0;
             }else{
               $valuebefore = $pushpull->value_check;
@@ -2549,7 +2549,7 @@ class RecorderProcessController extends Controller
         for($i = 0; $i < $index; $i++){
             $temptemp = PushBlockTorqueTemp::where('middle',$array_middle[$i])->where('head_foot',$array_head_foot[$i])->where('push_block_code',$remark)->where('product_type',$product_type)->where('check_type',$check_type)->first();
             
-            if (count($temptemp) > 0) {
+            if ($temptemp != null) {
               $temp[] = array('check_date' => $temptemp->check_date,
               'check_type' => $temptemp->check_type,
               'injection_date_middle' => $temptemp->injection_date_middle,
@@ -3209,7 +3209,7 @@ class RecorderProcessController extends Controller
 
         $inventory = InjectionInventory::where('material_number',$request->get('material_number'))->where('location','RC91')->first();
 
-        if (count($inventory) > 0) {
+        if ($inventory != null) {
           $inventory->quantity = $inventory->quantity - $request->get('quantity');
           $inventory->save(); 
         }
@@ -3441,7 +3441,7 @@ class RecorderProcessController extends Controller
 
         $inventory = InjectionInventory::where('material_number',$rc_return_logs->material_number)->where('location','RC91')->first();
 
-        if (count($inventory) > 0) {
+        if ($inventory != null) {
           $inventory->quantity = $inventory->quantity + $rc_return_logs->quantity;
           $inventory->save(); 
         }
@@ -4651,12 +4651,12 @@ class RecorderProcessController extends Controller
 
         $employee = db::table('employees')->where('tag', 'like', '%'.$nik.'%')->first();
 
-        if(count($employee) > 0 ){
+        if($employee != null ){
           $kensas = RcKensaInitial::where('operator_kensa',$employee->employee_id)->where('status','Open')->where('line',$request->get('line'))->get();
           $tray = RcNgBox::where('tray',$tray)->where('date',date('Y-m-d'))->first();
           if (count($kensas) > 0) {
             $checkbox = RcBoxResult::where('operator_kensa',$employee->employee_id)->where('check_date',date('Y-m-d'))->where('product',$kensas[0]->product)->first();
-            if (count($checkbox) == 0) {
+            if ($checkbox == null) {
               RcBoxResult::create([
                 'operator_kensa' => $employee->employee_id,
                 'product' => $kensas[0]->product,
@@ -4729,7 +4729,7 @@ class RecorderProcessController extends Controller
 
         $tag = InjectionTag::where('tag',$request->get('tag'))->where('part_type','like','%'.$part.'%')->first();
 
-        if (count($tag) > 0) {
+        if ($tag != null) {
           $response = array(
               'status' => true,
               'message' => 'Scan Tag Success',
@@ -6668,7 +6668,7 @@ class RecorderProcessController extends Controller
     public function indexKensaInitial()
     {
       $emp = EmployeeSync::where('employee_id',Auth::user()->username)->first();
-      if (count($emp) > 0) {
+      if ($emp != null) {
         if ($emp->position != 'Operator' || $emp->position != 'Senior Operator') {
           return view('recorder.process.kensa_initial')
           ->with('title', 'Inisialisasi Kensa Kakuning Recorder')
@@ -9858,7 +9858,7 @@ class RecorderProcessController extends Controller
     {
       try {
         $emp = Employee::where('tag',$request->get('employee_id'))->first();
-        if (count($emp) > 0) {
+        if ($emp != null) {
           $response = array(
             'status' => true,
             'message' => 'Scan Success',
@@ -9905,7 +9905,7 @@ class RecorderProcessController extends Controller
         $kensa_auditee = RcKensaInitial::where('serial_number',$kensa_code)->where('material_number',$product)->leftjoin('employee_syncs','employee_syncs.employee_id','rc_kensa_initials.operator_kensa')->first();
 
 
-        if (count($kensa) > 0) {
+        if ($kensa != null) {
           $audit = RcQaAudit::create([
             'date' => $date,
             'product' => $product,
@@ -10051,7 +10051,7 @@ class RecorderProcessController extends Controller
     {
       try {
         $tray = RcNgBox::where('date',date('Y-m-d'))->where('tray',$request->get('tray'))->first();
-        if (count($tray) > 0) {
+        if ($tray != null) {
           if ($request->get('ng_head') != 0) {
             $tray->ng_head = $tray->ng_head+1;
           }
